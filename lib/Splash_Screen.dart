@@ -1,0 +1,86 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:globegaze/welcomescreen/welcomemain.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_signup_screens/login_with_email&passsword.dart';
+
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  SharedPreferences? shareP;
+
+  @override
+  void initState() {
+    super.initState();
+    sharePreferences();
+  }
+
+  Future<void> sharePreferences() async {
+    shareP = await SharedPreferences.getInstance();
+    bool check = shareP?.getBool('welcomedata') ?? true; // Handle null cases
+    Timer(Duration(seconds: 6), () {
+      if (check) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: isDarkMode ? Colors.black : Colors.white, // Background color
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 25,
+                  color: isDarkMode ? Colors.white : Color(0xff48566a), // Text color
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'G',
+                    style: TextStyle(color: Color(0xff43dd8c)),
+                  ),
+                  TextSpan(text: 'LOBE'),
+                  TextSpan(text: ' '),
+                  TextSpan(
+                    text: 'G',
+                    style: TextStyle(color: Color(0xff43dd8c)),
+                  ),
+                  TextSpan(text: 'AZE'),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
+            Lottie.asset(
+              isDarkMode
+                  ? 'assets/lottie_animation/darkanimationspalsh.json'
+                  : 'assets/lottie_animation/lightanimationspalsh.json',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
