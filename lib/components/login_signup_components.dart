@@ -266,32 +266,29 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
             customTextField(isDarkMode: isDarkMode, name: 'Full Name',icon: Icons.account_circle,obs: false,keyboradType: TextInputType.name,controllerr: fullname),
             SizedBox(height: 16),
             // Phone TextField
-            Form(
-              key: _formKey,
-              child: IntlPhoneField(
-                controller: phone,
-                keyboardType: TextInputType.phone,
-                cursorColor: PrimaryColor,
-                focusNode: focusNode,
-                style: TextStyle(color: LightDark(isDarkMode)),
-                // focusNode: focusNode,
-                decoration: InputDecoration(
-                  label: Text('Phone Number',style: TextStyle(color:LightDark(isDarkMode)),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13.0),
-                    borderSide: BorderSide(color: PrimaryColor),
-                  ),
+            IntlPhoneField(
+              controller: phone,
+              keyboardType: TextInputType.phone,
+              cursorColor: PrimaryColor,
+              focusNode: focusNode,
+              style: TextStyle(color: LightDark(isDarkMode)),
+              // focusNode: focusNode,
+              decoration: InputDecoration(
+                label: Text('Phone Number',style: TextStyle(color:LightDark(isDarkMode)),
                 ),
-                dropdownIcon: Icon(Icons.arrow_drop_down_outlined,color: PrimaryColor,),
-                showCountryFlag: true,
-                languageCode: "en",
-                initialCountryCode: 'IN',
-                dropdownTextStyle: TextStyle(color: PrimaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(13.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(13.0),
+                  borderSide: BorderSide(color: PrimaryColor),
+                ),
               ),
+              dropdownIcon: Icon(Icons.arrow_drop_down_outlined,color: PrimaryColor,),
+              //showCountryFlag: true,
+              languageCode: "en",
+              initialCountryCode: 'IN',
+              dropdownTextStyle: TextStyle(color: PrimaryColor),
             ),
             SizedBox(height: 16),
             // Email TextField
