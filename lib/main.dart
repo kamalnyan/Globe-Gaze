@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:globegaze/login_signup_screens/otp_screen.dart';
 import 'Splash_Screen.dart';
 
 void main() {
