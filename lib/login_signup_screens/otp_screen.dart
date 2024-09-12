@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:globegaze/components/Elevated_button.dart';
 import 'package:globegaze/themes/colors.dart';
 import 'package:pinput/pinput.dart';
 
+import '../themes/dark_light_switch.dart';
 class otp_screen extends StatefulWidget {
   const otp_screen({super.key});
-
   @override
   State<otp_screen> createState() => _otp_screenState();
 }
@@ -12,6 +13,8 @@ class otp_screen extends StatefulWidget {
 class _otp_screenState extends State<otp_screen> {
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
@@ -28,52 +31,41 @@ class _otp_screenState extends State<otp_screen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: PrimaryColor,
-        title: const Text('OTP'),
+        title: const Text('OTP',style: TextStyle(fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),
-      body: Container(
-          margin: const EdgeInsets.only(top: 40),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Container(
+          margin: const EdgeInsets.only(top: 20),
           width: double.infinity,
           child: Column(
             children: [
+              //  Text('Verification', style: TextStyle(
+              //   color: LightDark(isDarkMode),
+              //   fontSize: 28,
+              //   fontWeight: FontWeight.bold,
+              //    ),
+              // ),
+              Image(image: const AssetImage('assets/png_jpeg_images/otp.png'),height: 180,width: 180,),
               Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset(
-                  'assets/png_jpeg_images/otp1.png',
-                ),
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-              const Text('Verification', style: TextStyle(
-                color: Colors.black,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                child: const Text('Enter the code sent to your email',
+                margin: const EdgeInsets.symmetric(vertical: 30),
+                child:  Text('Enter otp sent to your phone',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color:LightDark(isDarkMode),
                     fontSize: 18
                   ),
                 ),
               ),
-              // Container(
-              //   margin: const EdgeInsets.only(bottom: 20),
-              //   child: const Text("+91 747 951 9946",
-              //     style: TextStyle(
-              //       color: Colors.black,
-              //       fontSize: 18,
-              //     ),
-              //   ),
-              // ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 30),
+                child:  Text("+91 747 951 9946",
+                  style: TextStyle(
+                    color:LightDark(isDarkMode),
+                    fontSize: 18,
+                  ),
+                ),
+              ),
               Pinput(
                 length: 6,
                 defaultPinTheme: defaultPinTheme,
@@ -84,61 +76,15 @@ class _otp_screenState extends State<otp_screen> {
                 ),
                 onCompleted: (pin) => debugPrint(pin),
               ),
+              SizedBox(height: 40,),
               SizedBox(
-                height: 20,
-              ),
-        SizedBox(
-          width: 300,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ButtonStyle(
-              foregroundColor:
-              WidgetStateProperty.all<Color>(Colors.white),
-              backgroundColor:
-              WidgetStateProperty.all<Color>(PrimaryColor),
-              shape:
-              WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24.0),
-                ),
-              ),
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(14.0),
-              child: Text(
-                'Verify',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
+                width: 240,
+                  height: 50,
+                  child: Button(onPress:(){},text:"Verify",fontSize: 17.0,bgColor: PrimaryColor,fgColor: Colors.white, ))
+            ],
           ),
         ),
-              const SizedBox(height: 20),
-              const Text(
-                "Didn't you receive any code?",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black38,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-              const Text(
-                "Resend New Code",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: PrimaryColor,
-                ),
-                textAlign: TextAlign.center,
-              ),
-          ],
-          ),
-        ),
-      );
-
+      ),
+    );
   }
 }

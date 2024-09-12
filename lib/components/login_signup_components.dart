@@ -1,17 +1,15 @@
-import 'dart:ffi';
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globegaze/components/textfield.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import '../login_signup_screens/createAnAccount.dart';
+import '../login_signup_screens/Create_An_Account.dart';
+import '../login_signup_screens/otp_screen.dart';
 import '../themes/colors.dart';
 import '../themes/dark_light_switch.dart';
-import 'AlertDilogbox.dart';
 import 'Elevated_button.dart';
 import 'EmailValidator.dart';
-Widget TopSection({required bool isDarkMode, required double screenHeight}) {
+Widget topSection({required bool isDarkMode, required double screenHeight}) {
   return Positioned(
     top: 0,
     left: 0,
@@ -23,7 +21,7 @@ Widget TopSection({required bool isDarkMode, required double screenHeight}) {
       ),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/png_jpeg_images/login_light.jpg'),
+          image: const AssetImage('assets/png_jpeg_images/login_light.jpg'),
           fit: BoxFit.cover,
           colorFilter: isDarkMode
               ? ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken)
@@ -32,12 +30,12 @@ Widget TopSection({required bool isDarkMode, required double screenHeight}) {
       ),
       child: Column(
         children: [
-          Text(
+          const Text(
             'Welcome to',
             style: TextStyle(color: Colors.white, fontSize: 21),
           ),
           RichText(
-            text: TextSpan(
+            text: const TextSpan(
               style: TextStyle(
                 fontSize: 25,
                 color: Colors.white,
@@ -57,7 +55,7 @@ Widget TopSection({required bool isDarkMode, required double screenHeight}) {
     ),
   );
 }
-Widget BottomSection({required bool isDarkMode, required double screenHeight, required BuildContext context,
+Widget bottomSection({required bool isDarkMode, required double screenHeight, required BuildContext context,
   required TextEditingController email,
   required TextEditingController password,
 }) {
@@ -68,10 +66,10 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
     top: screenHeight * 0.34,
     child: Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: darkLight(isDarkMode),
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
@@ -83,7 +81,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Login Title
-            Align(
+            const Align(
               alignment: Alignment.topLeft,
               child: Text(
                 'Login',
@@ -94,13 +92,13 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Email or Phone TextField
             customTextField(isDarkMode: isDarkMode, name: 'Email Or Phone',icon: Icons.email,obs: false,keyboradType: TextInputType.text,controllerr: email),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Password TextField
             customTextField(isDarkMode: isDarkMode, name: 'Password',icon: CupertinoIcons.lock,obs:true,keyboradType: TextInputType.text,controllerr: password),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Forgot Password and Create Account links
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +115,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Create_an_account()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const CreateAnAccount()));
                   },
                   child: Text(
                     'Create an account',
@@ -129,7 +127,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Get Started Button
             SizedBox(
               width: 350,
@@ -142,7 +140,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                 fgColor: Colors.white,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // OR divider
             Text(
               'OR',
@@ -151,7 +149,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                 color: isDarkMode ? PrimaryColor : Colors.black,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Social login options
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -179,7 +177,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.apple),
+                      icon: const Icon(Icons.apple),
                       iconSize: 50,
                     ),
                     Text(
@@ -218,7 +216,7 @@ Widget BottomSection({required bool isDarkMode, required double screenHeight, re
     ),
   );
 }
-Widget CbottomSection({required bool isDarkMode, required double screenHeight,
+Widget cbottomSection({required bool isDarkMode, required double screenHeight,
   required TextEditingController fullname,
   required TextEditingController email,
   required TextEditingController phone,
@@ -226,7 +224,6 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
   required TextEditingController confirmpassword,
   required BuildContext context
 }) {
-  GlobalKey<FormState> _formKey = GlobalKey();
   FocusNode focusNode = FocusNode();
   return Positioned(
     bottom: 0,
@@ -235,10 +232,10 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
     top: screenHeight * 0.30,
     child: Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: darkLight(isDarkMode),
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
@@ -250,7 +247,7 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Login Title
-            Align(
+            const Align(
               alignment: Alignment.topLeft,
               child: Text(
                 'Create your account',
@@ -261,10 +258,10 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Email or Phone TextField
             customTextField(isDarkMode: isDarkMode, name: 'Full Name',icon: Icons.account_circle,obs: false,keyboradType: TextInputType.name,controllerr: fullname),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Phone TextField
             IntlPhoneField(
               controller: phone,
@@ -281,25 +278,24 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(13.0),
-                  borderSide: BorderSide(color: PrimaryColor),
+                  borderSide: const BorderSide(color: PrimaryColor),
                 ),
               ),
-              dropdownIcon: Icon(Icons.arrow_drop_down_outlined,color: PrimaryColor,),
-              //showCountryFlag: true,
+              dropdownIcon: const Icon(Icons.arrow_drop_down_outlined,color: PrimaryColor,),
               languageCode: "en",
               initialCountryCode: 'IN',
-              dropdownTextStyle: TextStyle(color: PrimaryColor),
+              dropdownTextStyle: const TextStyle(color: PrimaryColor),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Email TextField
             customTextField(isDarkMode: isDarkMode, name: 'Email',icon: Icons.email,obs: false,keyboradType: TextInputType.emailAddress,controllerr: email),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Password TextField
             customTextField(isDarkMode: isDarkMode, name: 'Password',icon: CupertinoIcons.lock,obs: true,keyboradType: TextInputType.text,controllerr: password),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Password TextField
             customTextField(isDarkMode: isDarkMode, name: 'Confirm Password',icon: CupertinoIcons.lock,obs: true,keyboradType: TextInputType.text,controllerr: confirmpassword),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             // Forgot Password and Create Account links
             SizedBox(
               width: 300,
@@ -310,41 +306,42 @@ Widget CbottomSection({required bool isDarkMode, required double screenHeight,
                   fontSize: 17.0,
                   fgColor: Colors.white,
                   onPress: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>otp_screen()));
                     // Fetching Input
-                    final Fullname = fullname.text.toString();
-                    final Email = email.text.toString();
-                    final Phone = phone.text.toString();
-                    final Password = password.text.toString();
-                    final ConfirmPassword = confirmpassword.text.toString();
+                    final fullName = fullname.text.toString();
+                    final emaill = email.text.toString();
+                    final phonee = phone.text.toString();
+                    final passwordd = password.text.toString();
+                    final confirmPassword = confirmpassword.text.toString();
                     // Validating Inputs
-                    if (Fullname.isEmpty || Fullname.length < 3) {
+                    if (fullName.isEmpty || fullName.length < 3) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(
+                        const SnackBar(content: Text(
                             'Full Name must be at least 3 characters long'),backgroundColor: PrimaryColor,),
                       );
-                    } else if (Phone.isEmpty || Phone.length != 10) {
+                    } else if (phonee.isEmpty || phonee.length != 10) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                             content: Text('Phone number must be 10 digits'),backgroundColor: PrimaryColor,),
                       );
-                    } else if (!isValidEmail(Email)) {
+                    } else if (!isValidEmail(emaill)) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please enter a valid email'),backgroundColor: PrimaryColor,),
+                        const SnackBar(content: Text('Please enter a valid email'),backgroundColor: PrimaryColor,),
                       );
-                    } else if (Password.isEmpty || Password.length < 6) {
+                    } else if (passwordd.isEmpty || passwordd.length < 6) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(
+                        const SnackBar(content: Text(
                             'Password must be at least 6 characters long'),backgroundColor: PrimaryColor,),
                       );
-                    } else if (Password != ConfirmPassword) {
+                    } else if (passwordd != confirmPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Passwords do not match'),backgroundColor: PrimaryColor,),
+                        const SnackBar(content: Text('Passwords do not match'),backgroundColor: PrimaryColor,),
                       );
                     }
                   }
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // OR divider
             // Text(
             //   'OR',
