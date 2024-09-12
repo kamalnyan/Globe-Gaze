@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: Colors.black,
       ),
-      home:  MyHomePage(),
+      home:  const otp_screen(),
     );
   }
 }
