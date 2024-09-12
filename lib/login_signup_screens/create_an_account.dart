@@ -1,18 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../components/login_signup_components.dart';
-class Create_an_account extends StatefulWidget {
+class CreateAnAccount extends StatefulWidget {
+  const CreateAnAccount({super.key});
+
   @override
-  State<Create_an_account> createState() => LoginState();
+  State<CreateAnAccount> createState() => CreateAccountState();
 }
-class LoginState extends State<Create_an_account> {
-  TextEditingController _fullname = TextEditingController();
-  TextEditingController _email = TextEditingController();
-  TextEditingController  _phone= TextEditingController();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _confirmpassword = TextEditingController();
+class CreateAccountState extends State<CreateAnAccount> {
+  final TextEditingController _fullname = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController  _phone= TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirmpassword = TextEditingController();
   late SharedPreferences shareP;
   @override
   void initState() {
@@ -28,13 +28,13 @@ class LoginState extends State<Create_an_account> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        color: isDarkMode ? Color(0xFF121212) : Colors.white, // Professional dark and light background
+        color: isDarkMode ? const Color(0xFF121212) : Colors.white,
         child: Stack(
           children: [
             // Background image section at the top
-            TopSection(isDarkMode: isDarkMode, screenHeight: screenHeight),
+            topSection(isDarkMode: isDarkMode, screenHeight: screenHeight),
             // Login form section at the bottom
-            CbottomSection(isDarkMode: isDarkMode, screenHeight: screenHeight,
+            cbottomSection(isDarkMode: isDarkMode, screenHeight: screenHeight,
                 fullname: _fullname,
                 email: _email,
                 phone: _phone,

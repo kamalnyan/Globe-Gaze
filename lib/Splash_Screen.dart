@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:globegaze/welcomescreen/welcomemain.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_signup_screens/login_with_email&passsword.dart';
+import 'login_signup_screens/login_with_email_and_passsword.dart';
 
 class MyHomePage extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:globegaze/login_signup_screens/login_with_email&passsword.dart';
+import 'package:globegaze/login_signup_screens/login_with_email_and_passsword.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Welcome2 extends StatefulWidget {
