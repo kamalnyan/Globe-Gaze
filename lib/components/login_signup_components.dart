@@ -267,7 +267,6 @@ Widget cbottomSection({required bool isDarkMode, required double screenHeight,
               controller: phone,
               keyboardType: TextInputType.phone,
               cursorColor: PrimaryColor,
-              focusNode: focusNode,
               style: TextStyle(color: LightDark(isDarkMode)),
               // focusNode: focusNode,
               decoration: InputDecoration(
