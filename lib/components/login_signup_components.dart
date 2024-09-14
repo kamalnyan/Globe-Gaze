@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globegaze/components/textfield.dart';
+import 'package:globegaze/login_signup_screens/forget_password.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../login_signup_screens/Create_An_Account.dart';
 import '../login_signup_screens/otp_screen.dart';
@@ -104,7 +105,9 @@ Widget bottomSection({required bool isDarkMode, required double screenHeight, re
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const forgetPassword()));
+                  },
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(
@@ -133,7 +136,9 @@ Widget bottomSection({required bool isDarkMode, required double screenHeight, re
               width: 350,
               height: 50,
               child: Button(
-                onPress: () {},
+                onPress: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const otp_screen()));
+                },
                 text: 'Login',
                 bgColor: PrimaryColor,
                 fontSize: 17.0,
