@@ -12,5 +12,6 @@ Future AlertDialogBox({required BuildContext context,required CoolAlertType anim
     // icon's Background
     confirmBtnColor: PrimaryColor, // ok button color
     titleTextStyle: const TextStyle(color: Colors.orange,fontSize: 23),
+    backgroundColor: PrimaryColor,
   );
 }
