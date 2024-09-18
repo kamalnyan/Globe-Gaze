@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/firebase/login_signup_methods/sendverifaction.dart';
-import 'package:globegaze/login_signup_screens/login_with_email_and_passsword.dart';
+import '../../Screens/login_signup_screens/login_with_email_and_passsword.dart';
 import '../../components/AlertDilogbox.dart';
 import '../../themes/colors.dart';
 

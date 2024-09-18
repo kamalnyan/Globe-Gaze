@@ -1,12 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/welcomescreen/welcomemain.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_signup_screens/login_with_email_and_passsword.dart';
 
+import 'Screens/login_signup_screens/login_with_email_and_passsword.dart';
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -24,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> sharePreferences() async {
     shareP = await SharedPreferences.getInstance();
     bool check = shareP?.getBool('welcomedata') ?? true; // Handle null cases
-    Timer(Duration(seconds: 6), () {
+    Timer(Duration(seconds: 5), () {
       if (check) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => WelcomeScreen()),

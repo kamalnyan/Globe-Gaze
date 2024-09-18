@@ -2,9 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../components/AlertDilogbox.dart';
-import '../../login_signup_screens/login_with_email_and_passsword.dart';
 
 Future<void> sendVerificationEmail(User user,BuildContext context) async {
   try {

@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:globegaze/login_signup_screens/forget_password.dart';
-import 'package:globegaze/login_signup_screens/new_password.dart';
-import 'package:globegaze/login_signup_screens/otp_screen.dart';
 import 'Splash_Screen.dart';
 
 Future<void> main() async {

@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../components/Elevated_button.dart';
-import '../components/EmailValidator.dart';
-import '../components/LoadingAnimation.dart';
-import '../components/login_signup_components.dart';
-import '../components/textfield.dart';
-import '../firebase/login_signup_methods/AuthService.dart';
-import '../themes/colors.dart';
-import '../themes/dark_light_switch.dart';
+import '../../components/Elevated_button.dart';
+import '../../components/EmailValidator.dart';
+import '../../components/login_signup_components.dart';
+import '../../components/textfield.dart';
+import '../../firebase/login_signup_methods/AuthService.dart';
+import '../../themes/colors.dart';
+import '../../themes/dark_light_switch.dart';
 class CreateAnAccount extends StatefulWidget {
   const CreateAnAccount({super.key});
 
@@ -20,7 +19,6 @@ class CreateAnAccount extends StatefulWidget {
 class CreateAccountState extends State<CreateAnAccount> {
   final TextEditingController _fullname = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  final TextEditingController  _phone= TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmpassword = TextEditingController();
   late String _completePhone;

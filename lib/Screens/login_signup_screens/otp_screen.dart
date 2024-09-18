@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:globegaze/components/Elevated_button.dart';
 import 'package:globegaze/themes/colors.dart';
 import 'package:pinput/pinput.dart';
-import '../themes/dark_light_switch.dart';
+import '../../themes/dark_light_switch.dart';
 class otp_screen extends StatefulWidget {
   const otp_screen({super.key});
   @override
