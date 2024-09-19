@@ -58,10 +58,10 @@ class LoginState extends State<Login> {
       String errorMessage = 'An unexpected error occurred. Please try again later.';
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found with this email.';
-      } else if (e.code == 'wrong-password') {
-        errorMessage = 'Incorrect password. Please try again.';
+      } else if (e.code == 'invalid-credential') {
+        errorMessage = 'Incorrect email or password. Please try again.';
       } else if (e.code == 'invalid-email') {
-        errorMessage = 'Invalid email format.';
+        errorMessage = 'Incorrect email.';
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
