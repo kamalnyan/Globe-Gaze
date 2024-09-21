@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:globegaze/Screens/home_screens/main_home.dart';
 import 'Splash_Screen.dart';
 
 Future<void> main() async {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: Colors.black,
       ),
-      home:   MyHomePage(),
+      home:   const MainHome(),
     );
   }
 }

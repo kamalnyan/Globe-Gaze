@@ -62,6 +62,8 @@ class LoginState extends State<Login> {
         errorMessage = 'Incorrect email or password. Please try again.';
       } else if (e.code == 'invalid-email') {
         errorMessage = 'Incorrect email.';
+      } else if (e.code == 'channel-error') {
+        errorMessage = 'Please enter email and password.';
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
