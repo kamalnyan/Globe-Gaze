@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:globegaze/welcomescreen/welcomemain.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Screens/home_screens/main_home.dart';
 import 'Screens/login_signup_screens/login_with_email_and_passsword.dart';
+import 'welcomescreen/welcomemain.dart';
+
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -13,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences? shareP;
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -22,11 +24,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> sharePreferences() async {
     shareP = await SharedPreferences.getInstance();
-    bool check = shareP?.getBool('welcomedata') ?? true; // Handle null cases
+    bool showWelcomeScreen = shareP?.getBool('welcomedata') ?? true;
+    User? currentUser = _auth.currentUser;
     Timer(Duration(seconds: 5), () {
-      if (check) {
+      if (showWelcomeScreen) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        );
+      } else if (currentUser != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainHome()),
         );
       } else {
         Navigator.of(context).pushReplacement(

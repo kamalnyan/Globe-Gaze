@@ -7,3 +7,9 @@ Color darkLight(bool isDarkMode) {
 Color LightDark(bool isDarkMode) {
   return isDarkMode ? Colors.white : Colors.black;
 }
+Color LightDarkshade(bool isDarkMode) {
+  return isDarkMode ? Color(0xff71797E) : Colors.black;
+}
+Color darkLightshade(bool isDarkMode) {
+  return isDarkMode ? Colors.black54 : Colors.white;
+}

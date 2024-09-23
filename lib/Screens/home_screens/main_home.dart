@@ -1,9 +1,14 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:globegaze/Screens/home_screens/explore.dart';
-import 'package:globegaze/Screens/profile/profile.dart';
-import 'package:globegaze/themes/colors.dart'; // Assuming this imports your custom colors
+import 'package:globegaze/themes/colors.dart';
+import '../../themes/customappbar.dart';
+import '../../themes/dark_light_switch.dart';
+import 'explore.dart';
+import 'search.dart';
+import 'add.dart';
+import 'trips.dart';
+import 'profile.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
@@ -13,44 +18,56 @@ class MainHome extends StatefulWidget {
 }
 
 class _MainHomeState extends State<MainHome> {
-  int _selectedIndex = 0; // Track the selected tab
+  int _page = 0;
+  bool isDarkMode = false; // Toggle between dark/light mode
+  final PageController _pageController = PageController(initialPage: 0);
 
-  // Function to switch between different tabs
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  // Create a list of widgets corresponding to each tab's content
-  final List<Widget> _pages = <Widget>[
-    const explore(),
-    const explore(),
-    const explore(),
-    const explore(),
-    const profile(),
+  // List of pages for bottom navigation
+  final List<Widget> _pages = [
+    Explore(), // Page 0
+    SearchPage(),  // Page 1
+    AddPage(),     // Page 2
+    Trips(),   // Page 3
+    ProfilePage(), // Page 4
   ];
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    isDarkMode = brightness == Brightness.dark;
+
     return Scaffold(
-      body: _pages[_selectedIndex], // Display the content based on the selected tab
+      appBar: buildAppBar(_page, isDarkMode,context), // Apply the dynamic AppBar
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _page = index;
+          });
+        },
+        children: _pages,
+        physics: const NeverScrollableScrollPhysics(), // Disable swipe gesture
+      ),
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.react,
-        height: 60,
-        curveSize: 100,
-        top: -25,
-        color: Colors.white,
-        backgroundColor: PrimaryColor, // Using the custom PrimaryColor
-        items: const [
+        height: 70,
+        backgroundColor: isDarkMode ? Colors.black38 : Colors.white,
+        activeColor: PrimaryColor,
+        color: isDarkMode ? Colors.white : Colors.black38,
+        items: [
           TabItem(icon: Icons.explore, title: 'Explore'),
           TabItem(icon: Icons.search, title: 'Search'),
-          TabItem(icon: Icons.add_circle, title: 'Create'),
-          TabItem(icon: CupertinoIcons.car_detailed, title: 'Active Trip'),
-          TabItem(icon: Icons.person, title: 'Profile'),
+          TabItem(icon: Icons.add, title: 'Add'),
+          TabItem(icon: Icons.train, title: 'Trips'),
+          TabItem(icon: Icons.account_circle, title: 'Profile'),
         ],
-        initialActiveIndex: _selectedIndex, // Set the initial tab
-        onTap: _onItemTapped, // Handle tab selection
+        initialActiveIndex: _page, // Sync with current page
+        onTap: (int index) {
+          setState(() {
+            _page = index;
+          });
+          _pageController.jumpToPage(index); // Navigate to the selected page
+        },
       ),
     );
   }
