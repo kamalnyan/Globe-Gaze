@@ -3,6 +3,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:globegaze/Screens/login_signup_screens/verifyemail.dart';
 import 'package:globegaze/firebase/login_signup_methods/sendverifaction.dart';
 import '../../Screens/login_signup_screens/login_with_email_and_passsword.dart';
 import '../../components/AlertDilogbox.dart';
@@ -30,12 +31,11 @@ class AuthService {
           'Phone': phone,
           'CreatedAt': Timestamp.now(),
         });
-        await sendVerificationEmail(user,context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created Scuessfully'),
             backgroundColor: PrimaryColor,),
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Login()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> VerifyEmailScreen(email)));
       }
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

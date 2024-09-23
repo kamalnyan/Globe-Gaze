@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:globegaze/Screens/home_screens/main_home.dart';
+import 'package:globegaze/Screens/login_signup_screens/verifyemail.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/Elevated_button.dart';
@@ -11,7 +12,7 @@ import '../../components/textfield.dart';
 import '../../themes/colors.dart';
 import '../../themes/dark_light_switch.dart';
 import 'Create_An_Account.dart';
-import 'new_password.dart';
+import 'forgetpasswordverify.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -24,11 +25,6 @@ class LoginState extends State<Login> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   @override
-  void initState() {
-    super.initState();
-    sharePreferences();
-  }
-  @override
   void dispose() {
     _email.dispose();
     _password.dispose();
@@ -36,52 +32,64 @@ class LoginState extends State<Login> {
   }
   bool _isLoading = false;
   Future<void> _signInWithEmailPassword() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
+    final _Email=_email.text.trim();
+    final _Password=_password.text.trim();
+    if(_Email.isEmpty || _Password.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter valid email or password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }else {
       setState(() {
         _isLoading = true;
       });
-      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _email.text.trim(),
-        password: _password.text.trim(),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login Successful'),
-          backgroundColor: PrimaryColor,
-        ),
-      );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainHome()));
-    } on FirebaseAuthException catch (e) {
-      String errorMessage = 'An unexpected error occurred. Please try again later.';
-      if (e.code == 'user-not-found') {
-        errorMessage = 'No user found with this email.';
-      } else if (e.code == 'invalid-credential') {
-        errorMessage = 'Incorrect email or password. Please try again.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'Incorrect email.';
-      } else if (e.code == 'channel-error') {
-        errorMessage = 'Please enter email and password.';
+      try {
+        final UserCredential userCredential = await _auth
+            .signInWithEmailAndPassword(
+          email: _Email,
+          password: _Password,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login Successful'),
+            backgroundColor: PrimaryColor,
+          ),
+        );
+        if(userCredential.user!.emailVerified){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainHome()));
+          await loginScuess();
+        }else{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyEmailScreen(_Email)));
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = 'An unexpected error occurred. Please try again later.';
+        if (e.code == 'user-not-found') {
+          errorMessage = 'No user found with this email.';
+        } else if (e.code == 'invalid-credential') {
+          errorMessage = 'Incorrect email or password. Please try again.';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'Incorrect email.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Sign-in failed: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Sign-in failed: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
   @override
@@ -134,7 +142,7 @@ class LoginState extends State<Login> {
                   ),
                   const SizedBox(height: 16),
                   // Email or Phone TextField
-                  customTextField(isDarkMode: isDarkMode, name: 'Email Or Phone',icon: Icons.email,obs: false,keyboradType: TextInputType.text,controllerr: _email),
+                  customTextField(isDarkMode: isDarkMode, name: 'Email',icon: Icons.email,obs: false,keyboradType: TextInputType.emailAddress,controllerr: _email),
                   const SizedBox(height: 16),
                   // Password TextField
                   customTextField(isDarkMode: isDarkMode, name: 'Password',icon: CupertinoIcons.lock,obs:true,keyboradType: TextInputType.text,controllerr: _password),
@@ -145,7 +153,7 @@ class LoginState extends State<Login> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const NewPassword()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ForgotPassword()));
                         },
                         child: Text(
                           'Forgot Password?',
@@ -258,7 +266,7 @@ class LoginState extends State<Login> {
           ),
         ),
             if (_isLoading)
-              Opacity(
+              const Opacity(
                 opacity: 0.7,
                 child: ModalBarrier(dismissible: false, color: Colors.black),),
             if (_isLoading)
@@ -271,9 +279,10 @@ class LoginState extends State<Login> {
       ),
     );
   }
-  // Shared Preference for welcome_Screen
-  Future<void> sharePreferences() async {
+  // Shared Preference for welcome_Screen and login
+  Future<void> loginScuess() async{
     shareP = await SharedPreferences.getInstance();
     shareP.setBool('welcomedata', false);
+    shareP.setBool('login', true);
   }
 }

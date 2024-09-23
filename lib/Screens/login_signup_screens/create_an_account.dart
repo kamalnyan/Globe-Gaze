@@ -258,7 +258,7 @@ class CreateAccountState extends State<CreateAnAccount> {
                 child: ModalBarrier(dismissible: false, color: Colors.black),),
             if (_isLoading)
               Center(
-                child: LoadingAnimationWidget.discreteCircle(
+                child: LoadingAnimationWidget.staggeredDotsWave(
                   size: 67, color: PrimaryColor,
                 ),),
           ],

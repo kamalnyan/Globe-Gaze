@@ -45,10 +45,25 @@ dependencies:
   pinput: ^5.0.0
   velocity_x: ^4.2.1
   firebase_core: ^3.4.1
-  firebase_auth: ^5.2.1
+  firebase_auth: ^5.3.0
   cloud_firestore: ^5.4.1
   loading_animation_widget: ^1.2.1
+  email_otp: ^3.0.2
   convex_bottom_bar: ^3.2.0
+  geocoding: ^3.0.0
+  geolocator: ^13.0.1
+  http: ^1.2.2
+  font_awesome_flutter: ^10.7.0
+#  uuid: ^4.5.0
+#  open_filex: ^4.5.0
+#  path_provider: ^2.1.4
+#  intl: ^0.19.0
+#  image_picker: ^1.1.2
+#  file_picker: ^8.1.2
+#  mime: ^1.0.6
+  google_fonts: ^6.2.1
+  search_app_bar_page: ^2.3.1
+  shimmer: ^2.0.0
 
 
 dev_dependencies:
@@ -84,6 +99,7 @@ flutter:
     - assets/lottie_animation/
     - assets/svg_images/
     - assets/png_jpeg_images/
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
