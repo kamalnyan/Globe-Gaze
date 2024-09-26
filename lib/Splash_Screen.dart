@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Screens/chat/messegeui.dart';
 import 'Screens/home_screens/main_home.dart';
 import 'Screens/login_signup_screens/login_with_email_and_passsword.dart';
+import 'main.dart';
 import 'welcomescreen/welcomemain.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -49,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
-
+    mq=MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         width: double.infinity,

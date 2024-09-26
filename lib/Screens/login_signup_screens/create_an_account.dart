@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -12,7 +13,6 @@ import '../../themes/colors.dart';
 import '../../themes/dark_light_switch.dart';
 class CreateAnAccount extends StatefulWidget {
   const CreateAnAccount({super.key});
-
   @override
   State<CreateAnAccount> createState() => CreateAccountState();
 }
@@ -60,9 +60,15 @@ class CreateAccountState extends State<CreateAnAccount> {
       }else{
        await _authService.signUpWithEmailPassword(
             fullName: fullName,
+            about: 'hey ! lets travel',
+            image: 'assets/png_jpeg_images/user.png',
+            isOnline: false,
+            lastActive: Timestamp.now().toString(),
             email: emaill,
             phone: _completePhone,
             password: passwordd,
+            pushToken: '',
+            isUerAdded: true,
             context: context);
       }
     } catch (e) {

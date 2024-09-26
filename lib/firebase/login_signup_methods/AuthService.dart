@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/Screens/login_signup_screens/verifyemail.dart';
-import 'package:globegaze/firebase/login_signup_methods/sendverifaction.dart';
-import '../../Screens/login_signup_screens/login_with_email_and_passsword.dart';
+import 'package:globegaze/firebase/login_signup_methods/username.dart';
 import '../../components/AlertDilogbox.dart';
 import '../../themes/colors.dart';
+import '../usermodel/usermodel.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,22 +15,38 @@ class AuthService {
   Future<void> signUpWithEmailPassword({
     required String fullName,
     required String email,
+    required String about,
+    required String image,
     required String phone,
     required String password,
+    required bool isOnline,
+    required String lastActive,
+    required String pushToken,
+    required bool isUerAdded,
     required BuildContext context
   }) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password,);
-      final user = userCredential.user;
-      if (user != null) {
-        final uid = user.uid;
-        await _firestore.collection('Users').doc(uid).set({
-          'FullName': fullName,
-          'Email': email,
-          'Phone': phone,
-          'CreatedAt': Timestamp.now(),
-        });
+      final users = userCredential.user;
+      final username = trimBeforeAt(email);
+      if (users != null) {
+        final uid = users.uid;
+        UserModel user = UserModel(
+          id: uid,
+          fullName: fullName,
+          email: email,
+          about: about,
+          image: image,
+          phone: phone,
+          username: username,
+          isOnline: false,
+          lastActive: Timestamp.now(),
+          pushToken: '',
+          createdAt: Timestamp.now(),
+          userAdded: true,
+        );
+        await _firestore.collection('Users').doc(uid).set(user.toJson());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created Scuessfully'),
             backgroundColor: PrimaryColor,),
@@ -54,3 +70,4 @@ class AuthService {
     }
   }
 }
+

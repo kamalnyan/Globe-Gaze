@@ -13,3 +13,7 @@ Color LightDarkshade(bool isDarkMode) {
 Color darkLightshade(bool isDarkMode) {
   return isDarkMode ? Colors.black54 : Colors.white;
 }
+bool isDarkMode(BuildContext context){
+  var brightness = MediaQuery.of(context).platformBrightness;
+    return brightness == Brightness.dark;
+}

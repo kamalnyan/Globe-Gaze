@@ -156,12 +156,12 @@ class _ExploreState extends State<Explore> {
                                   snapshot.data!;
                               return DestinationCard(
                                 name: name,
-                                localty: locationDetails['locality'] ??
-                                    'Unknown locality',
-                                Country: locationDetails['country'] ??
-                                    'Unknown country',
+                                localty: locationDetails['locality'] ?? 'Unknown locality',
+                                Country: locationDetails['country'] ?? 'Unknown country',
                                 rate: rate,
                                 categories: categories,
+                                latitude: latitude,
+                                longitude: longitude,
                               );
                             } else {
                               return SizedBox.shrink();
@@ -184,78 +184,77 @@ class _ExploreState extends State<Explore> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(height: 16),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-
-                      StoryCircle(
-                        isAddStory: true,
-                        userName: "Add Story",
-                      ),
-                      SizedBox(width: 16),
-                      StoryCircle(
-                        image: 'assets/user1.jpg',
-                        userName: "Alice",
-                      ),
-                      SizedBox(width: 16),
-                      StoryCircle(
-                        image: 'assets/user2.jpg',
-                        userName: "Bob",
-                      ),
-                      SizedBox(width: 16),
-                      StoryCircle(
-                        image: 'assets/user3.jpg',
-                        userName: "Charlie",
-                      ),
-                      SizedBox(width: 16),
-                      StoryCircle(
-                        image: 'assets/user4.jpg',
-                        userName: "Diana",
-                      ),
-                      // Add more users as needed
-                    ],
-                  ),
-                ),
-                SizedBox(height: 24),
-                Text(
-                  'Feed',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                // SizedBox(height: 16),
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.horizontal,
+                //   child: Row(
+                //     children: [
+                //
+                //       StoryCircle(
+                //         isAddStory: true,
+                //         userName: "Add Story",
+                //       ),
+                //       SizedBox(width: 16),
+                //       StoryCircle(
+                //         image: 'assets/user1.jpg',
+                //         userName: "Alice",
+                //       ),
+                //       SizedBox(width: 16),
+                //       StoryCircle(
+                //         image: 'assets/user2.jpg',
+                //         userName: "Bob",
+                //       ),
+                //       SizedBox(width: 16),
+                //       StoryCircle(
+                //         image: 'assets/user3.jpg',
+                //         userName: "Charlie",
+                //       ),
+                //       SizedBox(width: 16),
+                //       StoryCircle(
+                //         image: 'assets/user4.jpg',
+                //         userName: "Diana",
+                //       ),
+                //       // Add more users as needed
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(height: 24),
+                // Text(
+                //   'Feed',
+                //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                // ),
               ],
             ), // upper section
-            SizedBox(height: 10),
-
-            // Feed section
-            PostCard(
-              avatar: 'assets/user1.jpg',
-              username: 'Jack robo',
-              timeAgo: '15 min ago',
-              image: 'assets/post_image.jpg',
-              likesCount: 31,
-              likedUsers: [
-                'assets/user2.jpg',
-                'assets/user3.jpg',
-                'assets/user4.jpg'
-              ],
-              description:
-                  "If you've ever grabbed a pack of retrosupply brushes...",
-            ),
-            SizedBox(height: 16),
-            PostCard(
-              avatar: 'assets/user2.jpg',
-              username: 'Maya Adams',
-              timeAgo: '20 min ago',
-              image: 'assets/post_image2.jpg',
-              likesCount: 45,
-              likedUsers: [
-                'assets/user1.jpg',
-                'assets/user3.jpg',
-                'assets/user5.jpg'
-              ],
-              description: "Exploring the beauty of nature...",
-            ),
+            // SizedBox(height: 10),
+            // // Feed section
+            // PostCard(
+            //   avatar: 'assets/user1.jpg',
+            //   username: 'Jack robo',
+            //   timeAgo: '15 min ago',
+            //   image: 'assets/post_image.jpg',
+            //   likesCount: 31,
+            //   likedUsers: [
+            //     'assets/user2.jpg',
+            //     'assets/user3.jpg',
+            //     'assets/user4.jpg'
+            //   ],
+            //   description:
+            //       "If you've ever grabbed a pack of retrosupply brushes...",
+            // ),
+            // SizedBox(height: 16),
+            // PostCard(
+            //   avatar: 'assets/user2.jpg',
+            //   username: 'Maya Adams',
+            //   timeAgo: '20 min ago',
+            //   image: 'assets/post_image2.jpg',
+            //   likesCount: 45,
+            //   likedUsers: [
+            //     'assets/user1.jpg',
+            //     'assets/user3.jpg',
+            //     'assets/user5.jpg'
+            //   ],
+            //   description: "Exploring the beauty of nature...",
+            // ),
           ],
         ),
       ),
