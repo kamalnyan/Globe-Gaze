@@ -23,7 +23,7 @@ class _MessegescreenState extends State<Messegescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isDarkMode(context)?Color(0xFF1E1E2A):Colors.white, // Dark background.
+      backgroundColor: isDarkMode(context)?DChatBack:ChatBack, // Dark background.
       appBar: AppBar(
         backgroundColor: isDarkMode(context)?Color(0xFF1E1E2A):Colors.white,
         elevation: 0,
@@ -94,12 +94,12 @@ class _MessegescreenState extends State<Messegescreen> {
                     );
                   case ConnectionState.none:
                     return const Center(
-                      child: Text('Say Hii👋',style: TextStyle(color: PrimaryColor,fontSize: 21),),
+                      child: Text('No Connection Found!🥺',style: TextStyle(color: PrimaryColor,fontSize: 21),),
                     );
                   case ConnectionState.active:
                   case ConnectionState.done:
                     final data = snapshot.data!.docs;
-                    _list = data.map((e) => Message.fromJson(e.data())).toList();
+                    _list = data.map((e) => Message.fromJson(e.data())).toList()??[];
                     if (_list.isNotEmpty) {
                       return ListView.builder(
                         itemCount:_list.length,
@@ -111,7 +111,7 @@ class _MessegescreenState extends State<Messegescreen> {
                     } else {
                       return const Center(
                         child: Text(
-                          "No Connection Found!🥺",
+                          "Say Hii👋",
                           style: TextStyle(fontSize: 25),
                         ),
                       );
@@ -153,7 +153,7 @@ class _MessegescreenState extends State<Messegescreen> {
                         child: TextField(
                           controller: _msgcontroller,
                           decoration: const InputDecoration(
-                            hintText: 'Type Something',
+                            hintText: 'Send message...',
                             border: InputBorder.none,
                           ),
                           onChanged: (value) {

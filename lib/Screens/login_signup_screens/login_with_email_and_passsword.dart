@@ -7,6 +7,7 @@ import 'package:globegaze/Screens/login_signup_screens/verifyemail.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/Elevated_button.dart';
+import '../../components/customNavigation.dart';
 import '../../components/login_signup_components.dart';
 import '../../components/textfield.dart';
 import '../../themes/colors.dart';
@@ -165,7 +166,7 @@ class LoginState extends State<Login> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const CreateAnAccount()));
+                          Navigator.push(context, createRoute());
                         },
                         child: Text(
                           'Create an account',

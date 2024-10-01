@@ -23,9 +23,7 @@ class Apis {
   }
   static Future<void> sendMessage(
       ChatUser chatUser, String msg, Type type) async {
-    //message sending time (also used as id)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
-    //message to send
     final Message message = Message(
         toId: chatUser.id,
         msg: msg,
