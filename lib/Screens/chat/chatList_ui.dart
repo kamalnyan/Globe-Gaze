@@ -1,8 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:globegaze/apis/chatdata.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import '../../components/chatComponents/Chatusermodel.dart';
 import '../../components/chatComponents/chatusercard.dart';
 import '../../themes/colors.dart';
@@ -16,6 +17,21 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
+  @override
+  void initState() {
+    super.initState();
+    Apis.fetchUserInfo().then((value) {
+      SystemChannels.lifecycle.setMessageHandler((message) async {
+        log("Lifecycle message: $message");
+        if (message.toString().contains("paused")) {
+          Apis.updateActiveStatus(false);
+        } else if (message.toString().contains("resumed")) {
+          Apis.updateActiveStatus(true);
+        }
+        return message;
+      });
+    },);
+  }
   List<ChatUser> _list = [];
   List<ChatUser> _searchList = [];
   bool _isSearching = false;

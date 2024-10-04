@@ -27,10 +27,9 @@ class MyDateUtil {
   }
 
   //get last message time (used in chat user card)
-  static String getLastMessageTime(
-      {required BuildContext context,
-        required String time,
-        bool showYear = false}) {
+  static String getLastMessageTime({required BuildContext context,
+    required String time,
+    bool showYear = false}) {
     final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
@@ -59,17 +58,14 @@ class MyDateUtil {
     String formattedTime = TimeOfDay.fromDateTime(time).format(context);
     if (time.day == now.day &&
         time.month == now.month &&
-        time.year == time.year) {
+        time.year == now.year) {
       return 'Last seen today at $formattedTime';
     }
-
     if ((now.difference(time).inHours / 24).round() == 1) {
       return 'Last seen yesterday at $formattedTime';
     }
-
     String month = _getMonth(time);
-
-    return 'Last seen on ${time.day} $month on $formattedTime';
+    return 'Last seen on ${time.day} $month at $formattedTime';
   }
 
   // get month name from month no. or index

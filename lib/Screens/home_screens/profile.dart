@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:globegaze/components/Elevated_button.dart';
 import 'package:globegaze/themes/colors.dart';
 
+import '../../apis/chatdata.dart';
 import '../login_signup_screens/login_with_email_and_passsword.dart';
 
 class ProfilePage extends StatefulWidget {

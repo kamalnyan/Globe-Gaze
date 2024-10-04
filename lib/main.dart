@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
+import 'package:flutter_notification_channel/notification_visibility.dart';
 import 'package:globegaze/Screens/home_screens/main_home.dart';
 import 'Splash_Screen.dart';
 late Size mq;
@@ -38,6 +43,13 @@ Future<void> main() async {
   </div>
   ''',
   );
+  var result = await FlutterNotificationChannel().registerNotificationChannel(
+    description: 'User Message Notifaction',  // Channel description
+    id: 'globegazemsg',  // Channel ID
+    importance: NotificationImportance.IMPORTANCE_HIGH,  // Importance level
+    name: 'Message',  // Channel name
+  );
+    log(result);
   runApp(const MyApp());
 }
 
@@ -61,6 +73,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 
 

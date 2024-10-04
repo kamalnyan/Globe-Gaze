@@ -108,7 +108,7 @@ class _MainHomeState extends State<MainHome> {
                 fontSize: 25,
                 color: LightDark(isDarkMode),
               ),
-              children: [
+              children: const [
                 TextSpan(
                   text: 'E',
                   style: TextStyle(

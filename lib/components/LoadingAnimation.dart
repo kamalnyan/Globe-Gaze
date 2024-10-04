@@ -10,3 +10,8 @@ Widget loadinganimation(){
       size: 200,)
   );
 }
+Widget loadinganimation2(){
+  return LoadingAnimationWidget.inkDrop(
+    color: PrimaryColor,
+    size: 50,);
+}
