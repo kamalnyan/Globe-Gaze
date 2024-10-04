@@ -78,20 +78,8 @@ class _MessegescreenState extends State<Messegescreen> {
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return Stack(
-                      children: [
-                        const Opacity(
-                          opacity: 0.7,
-                          child: ModalBarrier(dismissible: false, color: Colors.black),
-                        ),
-                        Center(
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                            size: 67,
-                            color: PrimaryColor,
-                          ),
-                        ),
-                      ],
-                    );
+                    // return
+                    return SizedBox();
                   case ConnectionState.none:
                     return const Center(
                       child: Text('No Connection Found!🥺',style: TextStyle(color: PrimaryColor,fontSize: 21),),
@@ -102,6 +90,7 @@ class _MessegescreenState extends State<Messegescreen> {
                     _list = data.map((e) => Message.fromJson(e.data())).toList()??[];
                     if (_list.isNotEmpty) {
                       return ListView.builder(
+                        reverse: true,
                         itemCount:_list.length,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {

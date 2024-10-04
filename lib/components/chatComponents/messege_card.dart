@@ -7,6 +7,7 @@ import 'package:globegaze/themes/dark_light_switch.dart';
 import '../../apis/chatdata.dart';
 import '../../main.dart';
 import '../../themes/colors.dart';
+import '../mydate.dart';
 
 class MessegeCard extends StatefulWidget {
   final Message message;
@@ -27,13 +28,11 @@ class _MessegeCardState extends State<MessegeCard> {
           : _Reciver(), // Other user's messages will be in blue
     );
   }
-
   // sender or another user message
   Widget _Reciver() {
-    //update last read message if sender and receiver are different
-    // if (widget.message.read.isEmpty) {
-    //   Apis.updateMessageReadStatus(widget.message);
-    // }
+    if (widget.message.read.isEmpty) {
+      Apis.updateMessageReadStatus(widget.message);
+    }
     return Flexible(
       child: Container(
         padding: EdgeInsets.all(widget.message.type == Type.image
@@ -60,10 +59,8 @@ class _MessegeCardState extends State<MessegeCard> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: mq.width * .04),
-                    child: Text(
-                      "12:32",
-                      // MyDateUtil.getFormattedTime(
-                      //     context: context, time: widget.message.sent),
+                    child: Text(MyDateUtil.getFormattedTime(
+                        context: context, time: widget.message.sent),
                       style: TextStyle(fontSize: 13, color:isDarkMode(context) ? DTimetxt : Timetxt),
                     ),
                   ),
@@ -87,7 +84,6 @@ class _MessegeCardState extends State<MessegeCard> {
       ),
     );
   }
-
   // our or user message
   Widget _Sender() {
     return Flexible(
@@ -114,17 +110,19 @@ class _MessegeCardState extends State<MessegeCard> {
                         fontSize: 15,
                         color: isDarkMode(context) ? DSenderTxt : SenderTxt),
                   ),
-                  if (widget.message.read.isNotEmpty)
-                    const Icon(Icons.done_all_rounded,
-                        color: Colors.blue, size: 20),
-                  //for adding some space
-                  const SizedBox(width: 2),
-                  //sent time
-                  Text(
-                    "12:36",
-                    // MyDateUtil.getFormattedTime(
-                    //     context: context, time: widget.message.sent),
-                    style:TextStyle(fontSize: 13, color: isDarkMode(context)?DTimetxt:Timetxt),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      //sent time
+                      Text(MyDateUtil.getFormattedTime(
+                          context: context, time: widget.message.sent),
+                        style:TextStyle(fontSize: 13, color: isDarkMode(context)?DTimetxt:Timetxt),
+                      ),
+                      SizedBox(width: 2),
+                      if (widget.message.read.isNotEmpty)
+                        const Icon(Icons.done_all_rounded,
+                            color: Colors.blue, size: 20),
+                    ],
                   ),
                 ],
               )
