@@ -15,3 +15,8 @@ Widget loadinganimation2(){
     color: PrimaryColor,
     size: 50,);
 }
+Widget Ailoadinganimation(){
+  return LoadingAnimationWidget.inkDrop(
+    color: PrimaryColor,
+    size: 50,);
+}

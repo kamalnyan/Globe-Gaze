@@ -15,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences? shareP;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
     shareP = await SharedPreferences.getInstance();
     bool showWelcomeScreen = shareP?.getBool('welcomedata') ?? true;
     User? currentUser = _auth.currentUser;
-    Timer(Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 5), () {
       if (showWelcomeScreen) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => WelcomeScreen()),
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
       } else if (currentUser != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainHome()),
+          MaterialPageRoute(builder: (context) => const MainHome()),
         );
       } else {
         Navigator.of(context).pushReplacement(
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: isDarkMode ? Colors.white : Color(0xff48566a), // Text color
                   fontWeight: FontWeight.bold,
                 ),
-                children: [
+                children: const [
                   TextSpan(
                     text: 'G',
                     style: TextStyle(color: Color(0xff43dd8c)),

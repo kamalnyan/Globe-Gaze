@@ -2,16 +2,17 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/components/chatComponents/Chatusermodel.dart';
 import 'package:globegaze/components/chatComponents/messege_card.dart';
+import 'package:globegaze/encrypt_decrypt/endrypt.dart';
 import 'package:globegaze/themes/dark_light_switch.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../apis/PushNotifaction.dart';
-import '../../apis/chatdata.dart';
+import '../../apis/APIs.dart';
 import '../../components/LoadingAnimation.dart';
 import '../../components/chatComponents/messegemodel.dart';
 import '../../components/mydate.dart';
@@ -29,10 +30,21 @@ class _MessegescreenState extends State<Messegescreen> {
   List<Message> _list = [];
   final _msgcontroller = TextEditingController();
   bool _showemoji = false, _isUploading = false;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  Future<void> _playSound() async {
+    await _audioPlayer.play(AssetSource('assets/sounds/ios.wav'));
+  }
+
   @override
   void initState() {
     requestPermissions();
     super.initState();
+  }
+  @override
+  void dispose() {
+    _playSound();
+    requestPermissions();
+    super.dispose();
   }
 
   @override
@@ -54,7 +66,7 @@ class _MessegescreenState extends State<Messegescreen> {
         },
         child: Scaffold(
           backgroundColor:
-              isDarkMode(context) ? DChatBack : ChatBack, // Dark background.
+              isDarkMode(context) ? Colors.black : ChatBack, // Dark background.
           appBar: AppBar(
             backgroundColor:
                 isDarkMode(context) ? Color(0xFF1E1E2A) : Colors.white,
@@ -122,7 +134,7 @@ class _MessegescreenState extends State<Messegescreen> {
               IconButton(
                 icon: Icon(CupertinoIcons.phone,
                     color:
-                        isDarkMode(context) ? Colors.white : Color(0xFF1E1E2A)),
+                        isDarkMode(context) ? Colors.white : Containerdark),
                 onPressed: () {
                   // Call button action
                 },
@@ -138,7 +150,7 @@ class _MessegescreenState extends State<Messegescreen> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         // return
-                        return SizedBox();
+                        return const SizedBox();
                       case ConnectionState.none:
                         return const Center(
                           child: Text(
@@ -183,7 +195,7 @@ class _MessegescreenState extends State<Messegescreen> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                            const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                         child: loadinganimation2())),
               _chatInput(),
               if (_showemoji)
@@ -202,7 +214,7 @@ class _MessegescreenState extends State<Messegescreen> {
                         middle: EmojiPickerItem.categoryBar,
                         bottom: EmojiPickerItem.emojiView,
                       ),
-                      searchViewConfig: SearchViewConfig(
+                      searchViewConfig: const SearchViewConfig(
                         backgroundColor: Colors.white,
                       ),
                     ),
@@ -221,40 +233,40 @@ class _MessegescreenState extends State<Messegescreen> {
   }
 
   Widget _chatInput() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2), // Transparent background
-            borderRadius: BorderRadius.circular(20), // Same rounded corners
-            border: Border.all(
-                color: Colors.white.withOpacity(0.2)), // Optional border
-          ),
-          padding: EdgeInsets.only(bottom: 20.0, top: 4, left: 3),
-          child: Row(
-            children: [
-              Expanded(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
-                            setState(() => _showemoji = true);
-                          },
-                          icon: Icon(CupertinoIcons.smiley_fill),
-                          color: PrimaryColor),
-                      Expanded(
-                        child: TextField(
+    return Container(
+      decoration: BoxDecoration(
+        color: isDarkMode(context)?DReciverBackg:Colors.white, // Adjust based on your theme
+        borderRadius:  const BorderRadius.only(
+          topLeft: Radius.circular(25.0),
+          topRight: Radius.circular(25.0),
+        ),
+
+      ),
+      padding: const EdgeInsets.only(bottom: 20.0, top: 20.0, left: 3),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDarkMode(context)?Textfieldlight:Textfielddark, // Adjust based on your theme
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        child: CupertinoTextField(
                           controller: _msgcontroller,
-                          decoration: const InputDecoration(
-                            hintText: 'Send message...',
-                            border: InputBorder.none,
+                          placeholder: 'Send message...',
+                          cursorColor: PrimaryColor,
+                          style: TextStyle(
+                            color: isDarkMode(context)?Colors.white:Colors.black,           // Set your desired text color
+                            decoration: TextDecoration.none, // Ensure no underline in the text
                           ),
+                          decoration: null, // Removing the default underline
                           onTap: () {
                             setState(() {
                               _showemoji = false;
@@ -262,57 +274,121 @@ class _MessegescreenState extends State<Messegescreen> {
                           },
                         ),
                       ),
-                      IconButton(
-                          onPressed: () async {
-                            final ImagePicker picker = ImagePicker();
-                            // Pick an image
-                            final XFile? image = await picker.pickImage(
-                                source: ImageSource.camera, imageQuality: 70);
-                            if (image != null) {
-                              log('Image Path: ${image.path}');
-                              setState(() => _isUploading = true);
-                              await Apis.sendChatImage(
-                                  widget.user, File(image.path));
-                              setState(() => _isUploading = false);
-                            }
-                          },
-                          icon: Icon(CupertinoIcons.photo_camera_solid),
-                          color: PrimaryColor),
-                      IconButton(
-                          onPressed: () async {
-                            final ImagePicker picker = ImagePicker();
-                            // Picking multiple images
-                            final List<XFile> images =
-                                await picker.pickMultiImage(imageQuality: 70);
-                            // uploading & sending image one by one
-                            for (var i in images) {
-                              log('Image Path: ${i.path}');
-                              setState(() => _isUploading = true);
-                              await Apis.sendChatImage(
-                                  widget.user, File(i.path));
-                              setState(() => _isUploading = false);
-                            }
-                          },
-                          icon: Icon(CupertinoIcons.photo_fill),
-                          color: PrimaryColor),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        // Action to show attach and gallery buttons
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => CupertinoActionSheet(
+                            actions: <CupertinoActionSheetAction>[
+                              CupertinoActionSheetAction(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  final ImagePicker picker = ImagePicker();
+                                  final XFile? image = await picker.pickImage(
+                                      source: ImageSource.camera, imageQuality: 70);
+                                  if (image != null) {
+                                    log('Image Path: ${image.path}');
+                                    setState(() => _isUploading = true);
+                                    try {
+                                      await Apis.sendChatImage(
+                                          widget.user, File(image.path));
+                                      setState(() => _isUploading = false);
+                                    } catch (e) {
+                                      print('Error sending image: $e');
+                                      setState(() => _isUploading = false);
+                                    }
+                                  }
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(CupertinoIcons.photo_camera_solid,
+                                        color: PrimaryColor),
+                                    SizedBox(width: 10),
+                                    Text('Camera'),
+                                  ],
+                                ),
+                              ),
+                              CupertinoActionSheetAction(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  final ImagePicker picker = ImagePicker();
+                                  final List<XFile> images =
+                                  await picker.pickMultiImage(
+                                      imageQuality: 70);
+                                  for (var i in images) {
+                                    log('Image Path: ${i.path}');
+                                    setState(() => _isUploading = true);
+                                    try {
+                                      await Apis.sendChatImage(
+                                          widget.user, File(i.path));
+                                      setState(() => _isUploading = false);
+                                    } catch (e) {
+                                      print('Error sending image: $e');
+                                      setState(() => _isUploading = false);
+                                    }
+                                  }
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(CupertinoIcons.photo_fill,
+                                        color: PrimaryColor),
+                                    SizedBox(width: 10),
+                                    Text('Gallery'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            cancelButton: CupertinoActionSheetAction(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Cancel'),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(CupertinoIcons.add, color: Colors.grey),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        setState(() => _showemoji = !_showemoji);
+                      },
+                      icon: Icon(CupertinoIcons.smiley, color: Colors.grey),
+                    ),
+                  ],
                 ),
               ),
-              CupertinoButton(
-                child: const Icon(CupertinoIcons.paperplane_fill,
-                    color: PrimaryColor, size: 27),
-                onPressed: () {
-                  if (_msgcontroller.text.isNotEmpty) {
-                    Apis.sendMessage(
-                        widget.user, _msgcontroller.text.trim(), Type.text);
-                    _msgcontroller.text = "";
-                  }
-                },
-              )
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+            child: CupertinoButton(
+              padding: EdgeInsets.all(0), // Ensure icon size doesn't grow too much
+              child: Container(
+                padding: const EdgeInsets.all(12), // Padding around the icon
+                decoration: const BoxDecoration(
+                  color: PrimaryColor, // Custom color based on your app's theme
+                  shape: BoxShape.circle, // Circular shape for the send button
+                ),
+                child:  const Icon(CupertinoIcons.paperplane_fill,
+                    color: Colors.white, size: 24),
+              ),
+              onPressed: () {
+                if (_msgcontroller.text.isNotEmpty) {
+                  Apis.sendMessage(
+                      widget.user,
+                      EncryptionService.encryptMessage(_msgcontroller.text.trim()),
+                      Type.text);
+                  _playSound();
+                  _msgcontroller.text = "";
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -7,9 +7,11 @@ import 'package:globegaze/Screens/chat/chatList_ui.dart';
 import 'package:globegaze/Screens/home_screens/profile.dart';
 import 'package:globegaze/Screens/home_screens/search.dart';
 import 'package:globegaze/Screens/home_screens/trips.dart';
+import '../../components/chatComponents/Chatusermodel.dart';
 import '../../firebase/login_signup_methods/username.dart';
 import '../../themes/colors.dart';
 import '../../themes/dark_light_switch.dart';
+import '../Notifaction/notifactions.dart';
 import 'add.dart';
 import 'explore.dart';
 
@@ -26,12 +28,16 @@ class _MainHomeState extends State<MainHome> {
   final PageController _pageController = PageController(initialPage: 0);
   String? username;
   bool isLoading = true;
+  static FirebaseAuth auth = FirebaseAuth.instance;
+  static User? user = auth.currentUser;
+  static String? userId = user!.uid;
 
   @override
   void initState() {
     super.initState();
     fetchUsername();
   }
+
   Future<void> fetchUsername() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
@@ -62,7 +68,8 @@ class _MainHomeState extends State<MainHome> {
     isDarkMode = brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: buildAppBar(_page, isDarkMode, context, isLoading ? 'Loading...' : username),
+      appBar: buildAppBar(
+          _page, isDarkMode, context, isLoading ? 'Loading...' : username),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -79,7 +86,7 @@ class _MainHomeState extends State<MainHome> {
         backgroundColor: isDarkMode ? Colors.black38 : Colors.white,
         activeColor: PrimaryColor,
         color: isDarkMode ? Colors.white : Colors.black38,
-        items: [
+        items: const [
           TabItem(icon: Icons.explore, title: 'Explore'),
           TabItem(icon: Icons.search, title: 'Search'),
           TabItem(icon: Icons.add, title: 'Add'),
@@ -97,7 +104,8 @@ class _MainHomeState extends State<MainHome> {
     );
   }
 
-  PreferredSizeWidget? buildAppBar(int pageIndex, bool isDarkMode, BuildContext context, String? username) {
+  PreferredSizeWidget? buildAppBar(
+      int pageIndex, bool isDarkMode, BuildContext context, String? username) {
     switch (pageIndex) {
       case 0:
         return AppBar(
@@ -125,38 +133,48 @@ class _MainHomeState extends State<MainHome> {
             IconButton(
               icon: Icon(CupertinoIcons.bell),
               onPressed: () {
-                // Notification action
+               Navigator.push(context, MaterialPageRoute(builder: (context)=>Notifactions(userId: userId!,)));
               },
             ),
             IconButton(
               icon: Icon(FontAwesomeIcons.facebookMessenger),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatList()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatList()));
               },
             ),
             const SizedBox(width: 15),
           ],
         );
       case 1:
-        return AppBar(
-          backgroundColor: darkLight(isDarkMode),
-          actions: [
-            Container(
-              width: 340,
-              height: 44,
-              child: SearchBar(
-                hintText: 'Search',
-                padding: const MaterialStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
-                  // Open search suggestions or results
-                },
-                leading: const Icon(Icons.search),
-              ),
-            ),
-          ],
-        );
+           return null;
+        // return AppBar(
+        //   backgroundColor: darkLight(isDarkMode),
+        //   title: Container(
+        //     width: 340,
+        //     height: 44,
+        //     child: CupertinoSearchTextField(
+        //       placeholder: 'Search',
+        //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        //       onChanged: (value) {
+        //         _searchList.clear();
+        //         for (var i in _list) {
+        //           if (i.name.toLowerCase().contains(value.toLowerCase()) ||
+        //               i.email.toLowerCase().contains(value.toLowerCase()) ||
+        //               i.username.toLowerCase().contains(value.toLowerCase())) {
+        //             _searchList.add(i);
+        //           }
+        //         }
+        //         setState(() {});
+        //       },
+        //       prefixIcon: const Icon(
+        //         CupertinoIcons.search,
+        //         color: CupertinoColors.systemGrey,
+        //       ),
+        //     ),
+        //   ),
+        //   centerTitle: true,
+        // );
       case 2:
         return null; // No AppBar on this page
       case 3:
@@ -177,9 +195,15 @@ class _MainHomeState extends State<MainHome> {
           backgroundColor: darkLight(isDarkMode),
           title: Text(username ?? 'Profile'), // Use the fetched username
           actions: [
-            GestureDetector(
-              child: Icon(CupertinoIcons.line_horizontal_3),
-              onTap: () {},
+            Builder(
+              builder: (context) {  // Builder to get proper context
+                return GestureDetector(
+                  child: Icon(CupertinoIcons.line_horizontal_3),
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();  // Correct context to open the drawer
+                  },
+                );
+              },
             ),
             SizedBox(width: 25),
           ],
