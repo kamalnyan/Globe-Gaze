@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/Screens/home_screens/main_home.dart';
 import 'package:globegaze/themes/colors.dart';
+import '../../apis/APIs.dart';
 import '../../firebase/login_signup_methods/sendverifaction.dart';
 import '../../themes/dark_light_switch.dart';
 import 'login_with_email_and_passsword.dart';
@@ -27,7 +28,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   void initState() {
     super.initState();
     user = _auth.currentUser;
-
+    Apis.fetchUserInfo();
     // Check if the email is already verified when the screen loads
     if (user != null) {
       isEmailVerified = user!.emailVerified;

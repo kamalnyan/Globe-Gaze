@@ -12,6 +12,7 @@ class ChatUser {
     required this.email,
     required this.pushToken,
     required this.username,
+    required this.Phone,
   });
 
   late String image;
@@ -24,10 +25,12 @@ class ChatUser {
   late String email;
   late String pushToken;
   late String username;
+  late String Phone;
   ChatUser.fromJson(Map<String, dynamic> json) {
     image = json['Image'] ?? '';
     about = json['About'] ?? '';
     name = json['FullName'] ?? '';
+    Phone = json['Phone'] ?? '';
     createdAt = json['CreatedAt'] != null && json['CreatedAt'] is Timestamp
         ? json['CreatedAt'] as Timestamp
         : Timestamp.now();

@@ -3,13 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:globegaze/Screens/chat/chatList_ui.dart';
 import 'package:globegaze/Screens/home_screens/profile.dart';
 import 'package:globegaze/Screens/home_screens/search.dart';
 import 'package:globegaze/Screens/home_screens/trips.dart';
+import '../../components/profile/drawer.dart';
 import '../../firebase/login_signup_methods/username.dart';
 import '../../themes/colors.dart';
 import '../../themes/dark_light_switch.dart';
+import '../Notifaction/notifactions.dart';
+import '../chat/chatList_ui.dart';
 import 'add.dart';
 import 'explore.dart';
 
@@ -26,12 +28,16 @@ class _MainHomeState extends State<MainHome> {
   final PageController _pageController = PageController(initialPage: 0);
   String? username;
   bool isLoading = true;
+  static FirebaseAuth auth = FirebaseAuth.instance;
+  static User? user = auth.currentUser;
+  static String? userId = user!.uid;
 
   @override
   void initState() {
     super.initState();
     fetchUsername();
   }
+
   Future<void> fetchUsername() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
@@ -62,7 +68,8 @@ class _MainHomeState extends State<MainHome> {
     isDarkMode = brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: buildAppBar(_page, isDarkMode, context, isLoading ? 'Loading...' : username),
+      appBar: buildAppBar(
+          _page, isDarkMode, context, isLoading ? 'Loading...' : username),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -73,13 +80,58 @@ class _MainHomeState extends State<MainHome> {
         children: _pages,
         physics: const NeverScrollableScrollPhysics(),
       ),
+      endDrawer: Drawer(  // Drawer on the right side
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Settings',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ProfileMenuWidget(
+              title: "Profile",
+              icon: CupertinoIcons.profile_circled,
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
+                );
+              },
+            ),
+            ProfileMenuWidget(
+              title: "Settings",
+              icon: CupertinoIcons.settings,
+              onPress: () {
+                // Navigate to settings page if needed
+              },
+            ),
+            ProfileMenuWidget(
+              title: "Logout",
+              icon: CupertinoIcons.square_arrow_left,
+              textColor: Colors.red,
+              endIcon: false,
+              onPress: () {
+                showLogoutDialog(context);
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.react,
         height: 70,
         backgroundColor: isDarkMode ? Colors.black38 : Colors.white,
         activeColor: PrimaryColor,
         color: isDarkMode ? Colors.white : Colors.black38,
-        items: [
+        items: const [
           TabItem(icon: Icons.explore, title: 'Explore'),
           TabItem(icon: Icons.search, title: 'Search'),
           TabItem(icon: Icons.add, title: 'Add'),
@@ -97,7 +149,8 @@ class _MainHomeState extends State<MainHome> {
     );
   }
 
-  PreferredSizeWidget? buildAppBar(int pageIndex, bool isDarkMode, BuildContext context, String? username) {
+  PreferredSizeWidget? buildAppBar(
+      int pageIndex, bool isDarkMode, BuildContext context, String? username) {
     switch (pageIndex) {
       case 0:
         return AppBar(
@@ -125,40 +178,23 @@ class _MainHomeState extends State<MainHome> {
             IconButton(
               icon: Icon(CupertinoIcons.bell),
               onPressed: () {
-                // Notification action
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Notifactions(userId: userId!,)));
               },
             ),
             IconButton(
               icon: Icon(FontAwesomeIcons.facebookMessenger),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatList()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatList()));
               },
             ),
             const SizedBox(width: 15),
           ],
         );
       case 1:
-        return AppBar(
-          backgroundColor: darkLight(isDarkMode),
-          actions: [
-            Container(
-              width: 340,
-              height: 44,
-              child: SearchBar(
-                hintText: 'Search',
-                padding: const MaterialStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
-                  // Open search suggestions or results
-                },
-                leading: const Icon(Icons.search),
-              ),
-            ),
-          ],
-        );
+        return null;
       case 2:
-        return null; // No AppBar on this page
+        return null;
       case 3:
         return AppBar(
           backgroundColor: darkLight(isDarkMode),
@@ -175,13 +211,18 @@ class _MainHomeState extends State<MainHome> {
       case 4:
         return AppBar(
           backgroundColor: darkLight(isDarkMode),
-          title: Text(username ?? 'Profile'), // Use the fetched username
+          title: Text(username ?? 'Profile'),
           actions: [
-            GestureDetector(
-              child: Icon(CupertinoIcons.line_horizontal_3),
-              onTap: () {},
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(CupertinoIcons.line_horizontal_3), // Drawer icon
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();  // Open the right drawer
+                  },
+                );
+              },
             ),
-            SizedBox(width: 25),
           ],
         );
       default:
@@ -191,7 +232,6 @@ class _MainHomeState extends State<MainHome> {
     }
   }
 
-  // List of pages for bottom navigation
   final List<Widget> _pages = [
     Explore(),
     SearchPage(),

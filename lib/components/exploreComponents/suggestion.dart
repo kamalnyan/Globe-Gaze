@@ -23,11 +23,9 @@ class DestinationCard extends StatelessWidget {
   }) : super(key: key);
 
   void _launchMap() async {
-    final String googleMapsUrl =
-        'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving';
-
-    if (await canLaunch(googleMapsUrl)) {
-      await launch(googleMapsUrl);
+    final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving');
+    if (await canLaunchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl);
     } else {
       throw 'Could not launch $googleMapsUrl';
     }

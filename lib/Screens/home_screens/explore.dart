@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/themes/colors.dart';
 import '../../apis/datamodel.dart';
-import '../../components/exploreComponents/postcard.dart';
-import '../../components/exploreComponents/storycircles.dart';
 import '../../components/exploreComponents/suggestion.dart';
 import '../../locationservices/current location.dart';
 import '../../themes/dark_light_switch.dart';
@@ -20,23 +18,29 @@ class _ExploreState extends State<Explore> {
   String _location = "Fetching location...";
   late PageController _pageController;
   int _currentPage = 0;
+  Timer? _pageTimer;
+
   @override
   void initState() {
     super.initState();
     _getLocation();
     fetchPlaces();
-    _pageController = PageController(viewportFraction: 0.8); // Adjust viewportFraction as needed
-    Timer.periodic(Duration(seconds: 10), (Timer timer) {
-      if (_currentPage < places.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 1000),
-        curve: Curves.easeInOut,
-      );
+    _pageController = PageController(viewportFraction: 0.8);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageTimer = Timer.periodic(Duration(seconds: 10), (Timer timer) {
+        if (_currentPage < places.length - 1) {
+          _currentPage++;
+        } else {
+          _currentPage = 0;
+        }
+        if (places.isNotEmpty) {
+          _pageController.animateToPage(
+            _currentPage,
+            duration: Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
     });
   }
 
@@ -60,7 +64,7 @@ class _ExploreState extends State<Explore> {
 
       // Fetch places and update state
       List<dynamic> fetchedPlaces =
-          await PlaceService().fetchPlaces(lonMin, latMin, lonMax, latMax);
+      await PlaceService().fetchPlaces(lonMin, latMin, lonMax, latMax);
       setState(() {
         places = fetchedPlaces;
       });
@@ -75,8 +79,10 @@ class _ExploreState extends State<Explore> {
   @override
   void dispose() {
     _pageController.dispose();
+    _pageTimer?.cancel(); // Cancel timer when the widget is disposed
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
@@ -91,7 +97,8 @@ class _ExploreState extends State<Explore> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -104,7 +111,6 @@ class _ExploreState extends State<Explore> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      // Search bar
                       SizedBox(
                         height: 45,
                         child: CupertinoSearchTextField(
@@ -115,28 +121,33 @@ class _ExploreState extends State<Explore> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      // Popular Destinations
-                      Text(
+                      const Text(
                         'Suggestions',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 16),
-                SizedBox(
+                // Ensure places list is not empty before building the PageView
+                places.isNotEmpty
+                    ? SizedBox(
                   height: 210,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: places.length,
                     itemBuilder: (context, index) {
                       var place = places[index];
-                      String name = place['properties']['name'] ?? 'Unknown';
-                      double longitude = place['geometry']['coordinates'][0];
-                      double latitude = place['geometry']['coordinates'][1];
+                      String name =
+                          place['properties']['name'] ?? 'Unknown';
+                      double longitude =
+                      place['geometry']['coordinates'][0];
+                      double latitude =
+                      place['geometry']['coordinates'][1];
                       int rate = place['properties']['rate'] ?? 0;
-                      String categories = place['properties']['kinds'] ?? '';
-
+                      String categories =
+                          place['properties']['kinds'] ?? '';
                       if (name.isNotEmpty &&
                           latitude != null &&
                           longitude != null &&
@@ -153,11 +164,13 @@ class _ExploreState extends State<Explore> {
                               return SizedBox.shrink();
                             } else if (snapshot.hasData) {
                               Map<String, String> locationDetails =
-                                  snapshot.data!;
+                              snapshot.data!;
                               return DestinationCard(
                                 name: name,
-                                localty: locationDetails['locality'] ?? 'Unknown locality',
-                                Country: locationDetails['country'] ?? 'Unknown country',
+                                localty: locationDetails['locality'] ??
+                                    'Unknown locality',
+                                Country: locationDetails['country'] ??
+                                    'Unknown country',
                                 rate: rate,
                                 categories: categories,
                                 latitude: latitude,
@@ -173,88 +186,10 @@ class _ExploreState extends State<Explore> {
                       }
                     },
                   ),
-                ),
-                SizedBox(height: 24),
-
-                // Stories Section
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Text(
-                    'Stories',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                // SizedBox(height: 16),
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     children: [
-                //
-                //       StoryCircle(
-                //         isAddStory: true,
-                //         userName: "Add Story",
-                //       ),
-                //       SizedBox(width: 16),
-                //       StoryCircle(
-                //         image: 'assets/user1.jpg',
-                //         userName: "Alice",
-                //       ),
-                //       SizedBox(width: 16),
-                //       StoryCircle(
-                //         image: 'assets/user2.jpg',
-                //         userName: "Bob",
-                //       ),
-                //       SizedBox(width: 16),
-                //       StoryCircle(
-                //         image: 'assets/user3.jpg',
-                //         userName: "Charlie",
-                //       ),
-                //       SizedBox(width: 16),
-                //       StoryCircle(
-                //         image: 'assets/user4.jpg',
-                //         userName: "Diana",
-                //       ),
-                //       // Add more users as needed
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(height: 24),
-                // Text(
-                //   'Feed',
-                //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                // ),
+                )
+                    : Center(child: Text('No places to show')),
               ],
-            ), // upper section
-            // SizedBox(height: 10),
-            // // Feed section
-            // PostCard(
-            //   avatar: 'assets/user1.jpg',
-            //   username: 'Jack robo',
-            //   timeAgo: '15 min ago',
-            //   image: 'assets/post_image.jpg',
-            //   likesCount: 31,
-            //   likedUsers: [
-            //     'assets/user2.jpg',
-            //     'assets/user3.jpg',
-            //     'assets/user4.jpg'
-            //   ],
-            //   description:
-            //       "If you've ever grabbed a pack of retrosupply brushes...",
-            // ),
-            // SizedBox(height: 16),
-            // PostCard(
-            //   avatar: 'assets/user2.jpg',
-            //   username: 'Maya Adams',
-            //   timeAgo: '20 min ago',
-            //   image: 'assets/post_image2.jpg',
-            //   likesCount: 45,
-            //   likedUsers: [
-            //     'assets/user1.jpg',
-            //     'assets/user3.jpg',
-            //     'assets/user5.jpg'
-            //   ],
-            //   description: "Exploring the beauty of nature...",
-            // ),
+            ),
           ],
         ),
       ),

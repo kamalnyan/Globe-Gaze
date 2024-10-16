@@ -259,7 +259,7 @@ class CreateAccountState extends State<CreateAnAccount> {
             ),
           ),),
             if (_isLoading)
-              Opacity(
+              const Opacity(
                 opacity: 0.7,
                 child: ModalBarrier(dismissible: false, color: Colors.black),),
             if (_isLoading)
