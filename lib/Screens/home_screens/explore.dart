@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/themes/colors.dart';
+import '../../apis/APIs.dart';
 import '../../apis/datamodel.dart';
 import '../../components/exploreComponents/suggestion.dart';
 import '../../locationservices/current location.dart';
@@ -13,7 +14,7 @@ class Explore extends StatefulWidget {
   State<Explore> createState() => _ExploreState();
 }
 class _ExploreState extends State<Explore> {
-  List<dynamic> places = []; // List to hold the places data
+  List<dynamic> places = [];
   bool isLoading = false;
   String _location = "Fetching location...";
   late PageController _pageController;
@@ -27,7 +28,7 @@ class _ExploreState extends State<Explore> {
     fetchPlaces();
     _pageController = PageController(viewportFraction: 0.8);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pageTimer = Timer.periodic(Duration(seconds: 10), (Timer timer) {
+      _pageTimer = Timer.periodic(const Duration(seconds: 10), (Timer timer) {
         if (_currentPage < places.length - 1) {
           _currentPage++;
         } else {
@@ -36,21 +37,19 @@ class _ExploreState extends State<Explore> {
         if (places.isNotEmpty) {
           _pageController.animateToPage(
             _currentPage,
-            duration: Duration(milliseconds: 1000),
+            duration: const Duration(milliseconds: 1000),
             curve: Curves.easeInOut,
           );
         }
       });
     });
   }
-
   void _getLocation() async {
     String location = await getCurrentLocation();
     setState(() {
       _location = location;
     });
   }
-
   Future<void> fetchPlaces() async {
     setState(() {
       isLoading = true;
@@ -98,19 +97,19 @@ class _ExploreState extends State<Explore> {
               children: [
                 Padding(
                   padding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(CupertinoIcons.location,
+                          const Icon(CupertinoIcons.location,
                               size: 20, color: PrimaryColor),
-                          SizedBox(width: 8),
-                          Text(_location, style: TextStyle(fontSize: 15)),
+                          const SizedBox(width: 8),
+                          Text(_location, style: const TextStyle(fontSize: 15)),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       SizedBox(
                         height: 45,
                         child: CupertinoSearchTextField(
@@ -120,7 +119,7 @@ class _ExploreState extends State<Explore> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       const Text(
                         'Suggestions',
                         style: TextStyle(
@@ -129,7 +128,7 @@ class _ExploreState extends State<Explore> {
                     ],
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 // Ensure places list is not empty before building the PageView
                 places.isNotEmpty
                     ? SizedBox(
@@ -158,10 +157,10 @@ class _ExploreState extends State<Explore> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Center(
+                              return const Center(
                                   child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
-                              return SizedBox.shrink();
+                              return const SizedBox.shrink();
                             } else if (snapshot.hasData) {
                               Map<String, String> locationDetails =
                               snapshot.data!;
@@ -177,17 +176,17 @@ class _ExploreState extends State<Explore> {
                                 longitude: longitude,
                               );
                             } else {
-                              return SizedBox.shrink();
+                              return const SizedBox.shrink();
                             }
                           },
                         );
                       } else {
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       }
                     },
                   ),
                 )
-                    : Center(child: Text('No places to show')),
+                    : const Center(child: Text('No places to show')),
               ],
             ),
           ],

@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/home_screens/main_home.dart';
 import 'Screens/login_signup_screens/login_with_email_and_passsword.dart';
+import 'apis/APIs.dart';
 import 'main.dart';
 import 'welcomescreen/welcomemain.dart';
 
@@ -26,12 +27,13 @@ class _MyHomePageState extends State<MyHomePage> {
     shareP = await SharedPreferences.getInstance();
     bool showWelcomeScreen = shareP?.getBool('welcomedata') ?? true;
     User? currentUser = _auth.currentUser;
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 4), () {
       if (showWelcomeScreen) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => WelcomeScreen()),
         );
       } else if (currentUser != null) {
+        Apis.fetchUserInfo();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MainHome()),
@@ -80,10 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             SizedBox(height: 40),
-            Lottie.asset(
-              isDarkMode
-                  ? 'assets/lottie_animation/darkanimationspalsh.json'
-                  : 'assets/lottie_animation/lightanimationspalsh.json',
+            Lottie.asset( 'assets/lottie_animation/a1.json',
+              // isDarkMode
+              //     ? 'assets/lottie_animation/darkanimationspalsh.json'
+              //     : 'assets/lottie_animation/lightanimationspalsh.json',
               repeat: true,
               animate: true,
               frameRate: FrameRate(120),

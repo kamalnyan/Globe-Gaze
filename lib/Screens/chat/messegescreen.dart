@@ -33,13 +33,7 @@ class _MessegescreenState extends State<Messegescreen> {
 
   @override
   void initState() {
-    requestPermissions();
     super.initState();
-  }
-  @override
-  void dispose() {
-    requestPermissions();
-    super.dispose();
   }
 
   @override
@@ -220,11 +214,6 @@ class _MessegescreenState extends State<Messegescreen> {
         ),
       ),
     );
-  }
-
-  Future<void> requestPermissions() async {
-    await Permission.camera.request();
-    await Permission.storage.request();
   }
 
   Widget _chatInput() {

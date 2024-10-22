@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:globegaze/Screens/home_screens/profile.dart';
 import 'package:globegaze/Screens/home_screens/search.dart';
 import 'package:globegaze/Screens/home_screens/trips.dart';
+import '../../RequestPermissions/permissions.dart';
 import '../../components/profile/drawer.dart';
 import '../../firebase/login_signup_methods/username.dart';
 import '../../themes/colors.dart';
@@ -31,13 +32,18 @@ class _MainHomeState extends State<MainHome> {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static User? user = auth.currentUser;
   static String? userId = user!.uid;
-
+  @override
+  void dispose() {
+    fetchUsername();
+    permission.requestPermissions();
+    super.dispose();
+  }
   @override
   void initState() {
-    super.initState();
     fetchUsername();
+    permission.requestPermissions();
+    super.initState();
   }
-
   Future<void> fetchUsername() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
@@ -84,7 +90,7 @@ class _MainHomeState extends State<MainHome> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),

@@ -6,13 +6,13 @@ import 'package:globegaze/Screens/home_screens/main_home.dart';
 import 'package:globegaze/Screens/login_signup_screens/verifyemail.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../apis/APIs.dart';
 import '../../components/Elevated_button.dart';
 import '../../components/customNavigation.dart';
 import '../../components/login_signup_components.dart';
 import '../../components/textfield.dart';
 import '../../themes/colors.dart';
 import '../../themes/dark_light_switch.dart';
-import 'Create_An_Account.dart';
 import 'forgetpasswordverify.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -59,6 +59,7 @@ class LoginState extends State<Login> {
           ),
         );
         if(userCredential.user!.emailVerified){
+           Apis.fetchUserInfo();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainHome()));
           await loginScuess();
         }else{

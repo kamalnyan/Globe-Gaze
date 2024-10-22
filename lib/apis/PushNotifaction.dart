@@ -41,7 +41,7 @@ class FCMService {
           "android": {
             "notification": {
               "sound": "default",
-              "channel_id": "globegazemsg",  // Correct key is 'channel_id', not 'android_channel_id'
+              "channel_id": "globegazemsg",
             }
           }
         }

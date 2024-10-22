@@ -1,8 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:photo_manager/src/types/entity.dart';
-Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, TextEditingController _postController, Future<void> Function() _pickMedia, Future<void> Function() _pickLocation) {
+Widget buildStandardPost(
+    BuildContext context,
+    List<AssetEntity> selectedMedia,
+    TextEditingController _postController,
+    Function _pickMedia,
+    Function _pickLocation,
+    List<Map<String, dynamic>> savedDrafts,
+    Function(Map<String, dynamic>) deleteDraft, void Function() showDraftListDialog,
+    ) {
   int mediaCount = selectedMedia.length;
   int displayCount = mediaCount > 4 ? 4 : mediaCount;
   return Column(
@@ -12,15 +22,14 @@ Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, 
         padding: const EdgeInsets.all(16.0),
         child: TextField(
           controller: _postController,
-          maxLines: null, // Make the text field expandable as the user types
+          maxLines: null,
           keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            hintText: "How was your exprieance ?",
+          decoration: const InputDecoration(
+            hintText: "How was your experience?",
             border: InputBorder.none,
           ),
         ),
       ),
-
       // Gallery and Location buttons below the text field
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -28,7 +37,7 @@ Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, 
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: _pickMedia,
+              onPressed: () => _pickMedia(),
               icon: const Column(
                 children: [
                   Icon(CupertinoIcons.photo),
@@ -38,12 +47,22 @@ Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, 
               ),
             ),
             IconButton(
-              onPressed: _pickLocation,
+              onPressed: () => _pickLocation(),
               icon: const Column(
                 children: [
                   Icon(CupertinoIcons.location),
                   SizedBox(height: 5),
                   Text('Location'),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: () => showDraftListDialog(),
+              icon: const Column(
+                children: [
+                  Icon(CupertinoIcons.collections),
+                  SizedBox(height: 5),
+                  Text('Saved drafts'),
                 ],
               ),
             ),
@@ -73,14 +92,14 @@ Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, 
                       fit: StackFit.expand,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0), // Adjust the radius as per your need
+                          borderRadius: BorderRadius.circular(10.0),
                           child: Image.memory(snapshot.data!, fit: BoxFit.cover),
                         ),
-                        if (index == 3 && mediaCount > 4) // More items indicator on the 4th item
+                        if (index == 3 && mediaCount > 4)
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0), // Match the border radius for consistency
+                            borderRadius: BorderRadius.circular(10.0),
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.black54,
                               ),
                               child: Center(
@@ -98,7 +117,7 @@ Widget buildStanderdPost(BuildContext context, List<AssetEntity> selectedMedia, 
                       ],
                     );
                   }
-                  return const CircularProgressIndicator();
+                  return const CupertinoActivityIndicator(radius: 15.0);
                 },
               );
             },
