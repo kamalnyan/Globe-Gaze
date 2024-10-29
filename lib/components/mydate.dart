@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MyDateUtil {
   // for getting formatted time from milliSecondsSinceEpochs String
@@ -98,4 +100,27 @@ class MyDateUtil {
     }
     return 'NA';
   }
+
+
+ static String timeAgo(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    Duration difference = DateTime.now().difference(dateTime);
+
+    if (difference.inMinutes < 1) {
+      return "just now";
+    } else if (difference.inMinutes < 60) {
+      return "${difference.inMinutes} min ago";
+    } else if (difference.inHours < 24) {
+      return "${difference.inHours} hr ago";
+    } else if (difference.inDays == 1) {
+      return "yesterday";
+    } else if (difference.inDays < 7) {
+      return "${difference.inDays} days ago";
+    } else if (difference.inDays < 365) {
+      return DateFormat('d MMM').format(dateTime);
+    } else {
+      return DateFormat('d MMM yyyy').format(dateTime);
+    }
+  }
+
 }

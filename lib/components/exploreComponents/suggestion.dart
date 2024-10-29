@@ -39,7 +39,7 @@ class DestinationCard extends StatelessWidget {
         width: 290,
         height: 110,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [Color(0xff4CA1AF), Color(0xffC4E0E5)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -66,14 +66,14 @@ class DestinationCard extends StatelessWidget {
               children: [
                 Text(
                   name.length > 10 ? '${name.substring(0, 10)}..' : name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Row(
                   children: List.generate(rate, (index) {
-                    return Icon(
+                    return const Icon(
                       Icons.star,
                       color: Colors.yellow,
                       size: 15,
@@ -85,13 +85,13 @@ class DestinationCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(localty, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-                Text(Country, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                Text(localty, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                Text(Country, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
               ],
             ),
             Text(
               categories.split(',')[0],
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.w400,
               ),

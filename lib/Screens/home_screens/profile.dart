@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../apis/APIs.dart';
 import '../../components/LoadingAnimation.dart';
+import '../../components/profile/drawer.dart';
 import '../../components/profile/editprofile.dart';
+import '../../components/profile/profileGrid.dart';
 import '../../themes/colors.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -28,6 +30,66 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(username),
+        actions: [
+          Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(CupertinoIcons.line_horizontal_3),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Settings',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ProfileMenuWidget(
+              title: "Profile",
+              icon: CupertinoIcons.profile_circled,
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
+                );
+              },
+            ),
+            ProfileMenuWidget(
+              title: "Settings",
+              icon: CupertinoIcons.settings,
+              onPress: () {
+                // Navigate to settings page if needed
+              },
+            ),
+            ProfileMenuWidget(
+              title: "Logout",
+              icon: CupertinoIcons.square_arrow_left,
+              textColor: Colors.red,
+              endIcon: false,
+              onPress: () {
+                showLogoutDialog(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -148,6 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 30),
                   const Divider(),
                   const SizedBox(height: 10),
+                  profileGrid(context),
                 ],
               ),
             ),
@@ -157,7 +220,6 @@ class _ProfilePageState extends State<ProfilePage> {
               opacity: 0.7,
               child: ModalBarrier(dismissible: false, color: Colors.black),
             ),
-
           if (_isUploading)
             Center(
               child: uploadingAnimation(),

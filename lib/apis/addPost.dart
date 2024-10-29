@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../firebase/usermodel/usermodel.dart';
+
 class addPost{
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -37,13 +39,27 @@ class addPost{
       uploadedFiles += 1.0;
       onProgress(uploadedFiles / totalFiles);
     }
-    // Save post to Firestore
     await FirebaseFirestore.instance.collection('Users').doc(uid).collection('Posts').add({
       'text': postText,
       'mediaUrls': mediaUrls,
       'location': location,
       'createdAt': Timestamp.now(),
     });
+    await FirebaseFirestore.instance.collection('CommanPosts').add({
+      'text': postText,
+      'mediaUrls': mediaUrls,
+      'location': location,
+      'createdAt': Timestamp.now(),
+      'userId': uid,
+    });
+  }
+ static Stream<List<Map<String, dynamic>>> fetchCommanPosts() {
+    return FirebaseFirestore.instance
+        .collection('CommanPosts')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList());
   }
 
   static Future<String> _uploadToStorage(
@@ -63,5 +79,33 @@ class addPost{
     });
     await uploadTask.whenComplete(() => null);
     return await ref.getDownloadURL();
+  }
+  static Future<UserModel?> fetchUserInformation(String uid) async {
+    try {
+      DocumentSnapshot doc = await firestore.collection('Users').doc(uid).get();
+      if (doc.exists) {
+        // Convert document to UserModel using fromJson
+        return UserModel.fromJson(doc.data() as Map<String, dynamic>);
+      } else {
+        print('User does not exist in the database.');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching user information: $e');
+      return null;
+    }
+  }
+  static Future<List<String>> fetchPhotos() async {
+    final postsSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(uid)
+        .collection('Posts')
+        .get();
+    List<String> photoUrls = [];
+    for (var doc in postsSnapshot.docs) {
+      List<dynamic> mediaUrls = doc['mediaUrls'];
+      photoUrls.addAll(mediaUrls.cast<String>());
+    }
+    return photoUrls;
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:globegaze/themes/colors.dart';
 import '../../apis/APIs.dart';
 import '../../themes/dark_light_switch.dart';
+import '../customTextFieldwidget.dart';
 
 void showEditProfileBottomSheet(
     BuildContext context, {
@@ -147,7 +148,7 @@ void showEditProfileBottomSheet(
                             log(e.toString());
                           }
                         }
-                        Navigator.pop(context); // Close the bottom sheet
+                        Navigator.pop(context);
                       } : null,
                       child: const Center(
                         child: Text(
@@ -165,51 +166,5 @@ void showEditProfileBottomSheet(
         ),
       );
     },
-  );
-}
-
-// Helper widget to create profile text fields
-Widget buildProfileTextField(BuildContext context, {
-  required TextEditingController controller,
-  required IconData icon,
-  required String placeholder,
-}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: PrimaryColor.withOpacity(0.1),
-          ),
-          child: Icon(icon, color: PrimaryColor),
-        ),
-      ),
-      Expanded(
-        child: Container(
-          height: 50,
-          decoration: BoxDecoration(
-            color: Color(0xFF343434),
-            borderRadius: BorderRadius.circular(22.0),
-          ),
-          child: CupertinoTextField(
-            controller: controller,
-            placeholder: placeholder,
-            cursorColor: PrimaryColor,
-            style: TextStyle(
-              color: isDarkMode(context) ? Colors.white : Colors.black,
-              decoration: TextDecoration.none,
-            ),
-            decoration: null,
-            maxLines: 1,
-          ),
-        ),
-      ),
-    ],
   );
 }

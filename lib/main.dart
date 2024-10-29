@@ -1,17 +1,22 @@
 import 'dart:developer';
 
 import 'package:email_otp/email_otp.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:globegaze/components/exploreComponents/postcard.dart';
+import 'package:provider/provider.dart';
+import 'Providers/postProviders/imageMediaProviders.dart';
+import 'Providers/postProviders/locationProvider.dart';
 import 'Splash_Screen.dart';
 import 'apis/APIs.dart';
 late Size mq;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate();
   EmailOTP.config(
     appName: 'Globe Gaze',
     otpType: OTPType.numeric,
@@ -50,7 +55,15 @@ Future<void> main() async {
     name: 'Message',
   );
     log(result);
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MediaProvider()),
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

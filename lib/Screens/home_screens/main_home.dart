@@ -34,40 +34,14 @@ class _MainHomeState extends State<MainHome> {
   static String? userId = user!.uid;
   @override
   void dispose() {
-    fetchUsername();
     permission.requestPermissions();
     super.dispose();
   }
   @override
   void initState() {
-    fetchUsername();
     permission.requestPermissions();
     super.initState();
   }
-  Future<void> fetchUsername() async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      try {
-        String? fetchedUsername = await getUsernameFromFirestore(uid);
-        setState(() {
-          username = fetchedUsername ?? 'Guest';
-          isLoading = false;
-        });
-      } catch (e) {
-        print('Error fetching username: $e');
-        setState(() {
-          username = 'Error';
-          isLoading = false;
-        });
-      }
-    } else {
-      setState(() {
-        username = 'Guest';
-        isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
@@ -85,51 +59,6 @@ class _MainHomeState extends State<MainHome> {
         },
         children: _pages,
         physics: const NeverScrollableScrollPhysics(),
-      ),
-      endDrawer: Drawer(  // Drawer on the right side
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ProfileMenuWidget(
-              title: "Profile",
-              icon: CupertinoIcons.profile_circled,
-              onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
-                );
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Settings",
-              icon: CupertinoIcons.settings,
-              onPress: () {
-                // Navigate to settings page if needed
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Logout",
-              icon: CupertinoIcons.square_arrow_left,
-              textColor: Colors.red,
-              endIcon: false,
-              onPress: () {
-                showLogoutDialog(context);
-              },
-            ),
-          ],
-        ),
       ),
       bottomNavigationBar: ConvexAppBar(
         style: TabStyle.react,
@@ -215,22 +144,7 @@ class _MainHomeState extends State<MainHome> {
           ],
         );
       case 4:
-        return AppBar(
-          backgroundColor: darkLight(isDarkMode),
-          title: Text(username ?? 'Profile'),
-          actions: [
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: Icon(CupertinoIcons.line_horizontal_3), // Drawer icon
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();  // Open the right drawer
-                  },
-                );
-              },
-            ),
-          ],
-        );
+        return null;
       default:
         return AppBar(
           title: const Text("Default"),

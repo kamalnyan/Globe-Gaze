@@ -32,11 +32,6 @@ class _MessegescreenState extends State<Messegescreen> {
   bool _showemoji = false, _isUploading = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {

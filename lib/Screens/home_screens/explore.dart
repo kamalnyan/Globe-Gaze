@@ -2,20 +2,24 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:globegaze/themes/colors.dart';
-import '../../apis/APIs.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../apis/addPost.dart';
 import '../../apis/datamodel.dart';
+import '../../components/exploreComponents/postcard.dart';
 import '../../components/exploreComponents/suggestion.dart';
-import '../../locationservices/current location.dart';
+import '../../components/postComponents/locationBottomSheet.dart';
+import '../../locationservices/locationForSUGGESATION.dart';
 import '../../themes/dark_light_switch.dart';
 
 class Explore extends StatefulWidget {
-  const Explore({super.key});
+  const Explore({Key? key}) : super(key: key);
   @override
   State<Explore> createState() => _ExploreState();
 }
+
 class _ExploreState extends State<Explore> {
   List<dynamic> places = [];
-  bool isLoading = false;
+  bool isLoading = true;
   String _location = "Fetching location...";
   late PageController _pageController;
   int _currentPage = 0;
@@ -24,7 +28,6 @@ class _ExploreState extends State<Explore> {
   @override
   void initState() {
     super.initState();
-    _getLocation();
     fetchPlaces();
     _pageController = PageController(viewportFraction: 0.8);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -44,42 +47,190 @@ class _ExploreState extends State<Explore> {
       });
     });
   }
-  void _getLocation() async {
-    String location = await getCurrentLocation();
-    setState(() {
-      _location = location;
-    });
-  }
-  Future<void> fetchPlaces() async {
-    setState(() {
-      isLoading = true;
-    });
 
-    try {
-      double lonMin = 77.0;
-      double latMin = 31.0;
-      double lonMax = 77.2;
-      double latMax = 31.2;
-
-      // Fetch places and update state
-      List<dynamic> fetchedPlaces =
-      await PlaceService().fetchPlaces(lonMin, latMin, lonMax, latMax);
+  Future<void> _getLocation() async {
+    Map<String, String>? location = await fetchLocation();
+    if (mounted) {
       setState(() {
-        places = fetchedPlaces;
-      });
-    } catch (e) {
-      print('Error fetching places: $e');
-    } finally {
-      setState(() {
-        isLoading = false;
+        if (location != null) {
+          _location = "${location['locality']}, ${location['country']}";
+        } else {
+          _location = "Location not available";
+        }
       });
     }
   }
+  Future<void> fetchPlaces() async {
+    setState(() => isLoading = true);
+    Map<String, double>? currentloc = await getLocationBounds();
+    try {
+      double? lonMin = currentloc?['lonMin'];
+      double? latMin = currentloc?['latMin'];
+      double? lonMax = currentloc?['lonMax'];
+      double? latMax = currentloc?['latMax'];
+      List<dynamic> fetchedPlaces =
+      await PlaceService().fetchPlaces(lonMin!, latMin!, lonMax!, latMax!);
+      if (mounted) {
+        setState(() {
+          places = fetchedPlaces;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+      print('Error fetching places: $e');
+    } finally {
+      _getLocation();
+    }
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
-    _pageTimer?.cancel(); // Cancel timer when the widget is disposed
+    _pageTimer?.cancel();
     super.dispose();
+  }
+
+  Widget buildShimmerPost() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              height: 200,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 10),
+            Container(
+              width: 150,
+              height: 20,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 5),
+            Container(
+              width: 100,
+              height: 20,
+              color: Colors.grey[300],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget buildShimmerCard() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: 290,
+        height: 110,
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  width: 100,
+                  height: 20,
+                  color: Colors.grey[300],
+                ),
+                Row(
+                  children: List.generate(5, (index) {
+                    return Container(
+                      width: 15,
+                      height: 15,
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      color: Colors.grey[300],
+                    );
+                  }),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  width: 60,
+                  height: 20,
+                  color: Colors.grey[300],
+                ),
+                Container(
+                  width: 60,
+                  height: 20,
+                  color: Colors.grey[300],
+                ),
+              ],
+            ),
+            Container(
+              width: 120,
+              height: 20,
+              color: Colors.grey[300],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget buildPlaceCards() {
+    return places.isNotEmpty
+        ? SizedBox(
+      height: 210,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: places.length,
+        itemBuilder: (context, index) {
+          var place = places[index];
+          String name = place['properties']['name'] ?? 'Unknown';
+          double longitude = place['geometry']['coordinates'][0];
+          double latitude = place['geometry']['coordinates'][1];
+          int rate = place['properties']['rate'] ?? 0;
+          String categories = place['properties']['kinds'] ?? '';
+          if (name.isNotEmpty && latitude != null && longitude != null && rate > 0 && categories.isNotEmpty) {
+            return FutureBuilder<Map<String, String>?>(
+              future: getLocationDetails(latitude, longitude),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return buildShimmerCard();
+                } else if (snapshot.hasError) {
+                  return const SizedBox.shrink();
+                } else if (snapshot.hasData) {
+                  Map<String, String> locationDetails = snapshot.data!;
+                  return DestinationCard(
+                    name: name,
+                    localty: locationDetails['locality'] ?? 'Unknown locality',
+                    Country: locationDetails['country'] ?? 'Unknown country',
+                    rate: rate,
+                    categories: categories,
+                    latitude: latitude,
+                    longitude: longitude,
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
+    )
+        : const Center(child: Text('No places to show'));
   }
 
   @override
@@ -96,15 +247,13 @@ class _ExploreState extends State<Explore> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(CupertinoIcons.location,
-                              size: 20, color: PrimaryColor),
+                          const Icon(CupertinoIcons.location, size: 20, color: PrimaryColor),
                           const SizedBox(width: 8),
                           Text(_location, style: const TextStyle(fontSize: 15)),
                         ],
@@ -114,80 +263,56 @@ class _ExploreState extends State<Explore> {
                         height: 45,
                         child: CupertinoSearchTextField(
                           enableIMEPersonalizedLearning: true,
-                          style: TextStyle(
-                            color: LightDark(isDarkMode),
-                          ),
+                          style: TextStyle(color: LightDark(isDarkMode)),
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Suggestions',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                      const Text('Suggestions', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Ensure places list is not empty before building the PageView
-                places.isNotEmpty
-                    ? SizedBox(
-                  height: 210,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: places.length,
-                    itemBuilder: (context, index) {
-                      var place = places[index];
-                      String name =
-                          place['properties']['name'] ?? 'Unknown';
-                      double longitude =
-                      place['geometry']['coordinates'][0];
-                      double latitude =
-                      place['geometry']['coordinates'][1];
-                      int rate = place['properties']['rate'] ?? 0;
-                      String categories =
-                          place['properties']['kinds'] ?? '';
-                      if (name.isNotEmpty &&
-                          latitude != null &&
-                          longitude != null &&
-                          rate > 0 &&
-                          categories.isNotEmpty) {
-                        return FutureBuilder<Map<String, String>>(
-                          future: actualLocation(latitude, longitude),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return const SizedBox.shrink();
-                            } else if (snapshot.hasData) {
-                              Map<String, String> locationDetails =
-                              snapshot.data!;
-                              return DestinationCard(
-                                name: name,
-                                localty: locationDetails['locality'] ??
-                                    'Unknown locality',
-                                Country: locationDetails['country'] ??
-                                    'Unknown country',
-                                rate: rate,
-                                categories: categories,
-                                latitude: latitude,
-                                longitude: longitude,
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                )
-                    : const Center(child: Text('No places to show')),
+                isLoading ? buildShimmerCard() : buildPlaceCards(),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text('Posts', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
               ],
+            ),
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: addPost.fetchCommanPosts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return buildShimmerPost();
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No posts available'));
+                }
+                final posts = snapshot.data!;
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final postData = posts[index];
+                    return FutureBuilder<Widget>(
+                      future: PostCard(context, postData),
+                      builder: (context, postSnapshot) {
+                        if (postSnapshot.connectionState == ConnectionState.waiting) {
+                          return buildShimmerPost();
+                        }
+                        if (postSnapshot.hasError) {
+                          return const Center(child: Text('Error loading post'));
+                        }
+                        return postSnapshot.data ?? const SizedBox.shrink();
+                      },
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
