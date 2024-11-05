@@ -19,7 +19,7 @@ Widget profileGrid(BuildContext context) {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(), // To use it within a scrollable parent
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4, // 4 images per row
+          crossAxisCount: 3, // 4 images per row
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
         ),
